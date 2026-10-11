@@ -134,6 +134,11 @@ textarea{font-size:.8rem;font-weight:600;min-height:90px}
   background:var(--yellow);color:#141014;border:5px solid var(--line);border-radius:16px;padding:16px 22px;
   font-family:'Bungee',sans-serif;font-size:1.6rem;box-shadow:var(--shadow-lg);max-width:86vw;text-align:center}
 
+.advgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.door{aspect-ratio:1;border:4px solid var(--line);border-radius:12px;background:var(--yellow);color:#141014;
+  font-family:'Bungee',sans-serif;font-size:1.3rem;box-shadow:3px 3px 0 var(--line)}
+.door.done{background:var(--mint);color:#0B1A14;opacity:.75}
+.door:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--line)}
 .verdict{font-family:'Bungee',sans-serif;font-size:1.45rem;text-align:center;margin-top:4px}
 .timer{margin-top:10px;border:4px solid var(--line);border-radius:14px;background:var(--yellow);color:#141014;
   padding:12px;text-align:center;font-family:'Bungee',sans-serif;font-size:2.6rem;line-height:1}
@@ -179,12 +184,23 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
       <p>Ein Handy, zwei Leute. Spielen, wenn euch nach Wettkampf ist — oder einfach Zeit zu zweit.</p>
     </div>
 
-    <div class="row" style="margin-bottom:16px">
-      <div class="row two">
-        <button class="btn btn--pink" id="evBtn">Abend zu zweit</button>
-        <button class="btn btn--cyan" id="minBtn">Zwei Minuten</button>
-      </div>
+    <span class="label" style="margin-bottom:8px">Reden</span>
+    <div class="row two" style="margin-bottom:16px">
       <button class="btn btn--yes" id="fragBtn">Fragenstapel</button>
+      <button class="btn btn--pink" id="f36Btn">36 Fragen</button>
+      <button class="btn btn--cyan" id="minBtn">Zwei Minuten</button>
+      <button class="btn" id="klBtn">Klartext</button>
+    </div>
+
+    <span class="label" style="margin-bottom:8px">Zeit zu zweit</span>
+    <div class="row two" style="margin-bottom:16px">
+      <button class="btn btn--pink" id="evBtn">Abend zu zweit</button>
+      <button class="btn btn--go" style="font-size:1rem;padding:14px" id="dateBtn">Date-Ideen</button>
+      <button class="btn btn--cyan" id="escBtn">Escape Dinner</button>
+      <button class="btn btn--yes" id="noteBtn">Sticky Notes</button>
+      <button class="btn btn--pink" id="wuBtn">Wunsch-Abgleich</button>
+      <button class="btn" id="zielBtn">Wir-Liste</button>
+      <button class="btn" id="advBtn" style="grid-column:1 / -1">Adventskalender</button>
     </div>
 
     <div class="panel" style="display:grid;gap:14px">
@@ -313,6 +329,176 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
       <button class="btn btn--pink" id="mEnd">Spiel beenden</button>
     </div>
   </div>
+
+  <section id="screen-wunsch" class="hide">
+    <div id="wuIntro">
+      <div class="panel" style="display:grid;gap:12px">
+        <div class="display" style="font-size:1.6rem">Wunsch-Abgleich</div>
+        <p style="font-size:.92rem">35 Punkte, jeder geht allein durch. Ja, Vielleicht oder Nein. Danach zeigt die App nur, wo ihr beide Ja gesagt habt — alles andere sieht der andere nie.</p>
+        <p class="hint" id="wuState"></p>
+        <div class="row" id="wuStart"></div>
+        <button class="btn btn--go hide" id="wuResultBtn">Ergebnis ansehen</button>
+        <div class="row two">
+          <button class="btn btn--small" id="wuReset">Alles löschen</button>
+          <button class="btn btn--small" id="wuHome">Zurück zum Start</button>
+        </div>
+      </div>
+    </div>
+    <div id="wuResult" class="hide">
+      <div class="panel" style="display:grid;gap:10px">
+        <div class="display" style="font-size:1.4rem">Da seid ihr euch einig</div>
+        <div class="mylist" id="wuLists"></div>
+        <div class="row two">
+          <button class="btn btn--small" id="wuBackIntro" onclick="openWunsch()">Zurück</button>
+          <button class="btn btn--small" onclick="renderStart();show('screen-start')">Zum Start</button>
+        </div>
+      </div>
+    </div>
+    <div id="wuRun" class="hide">
+      <div class="card" id="wuCard">
+        <span class="badge m-dare" id="wuGroup">Nähe</span>
+        <div class="who" id="wuWho"></div>
+        <div class="q" id="wuText"></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn btn--yes" id="wuJa">Ja</button>
+        <button class="btn btn--cyan" id="wuVielleicht">Vielleicht</button>
+        <button class="btn btn--pink" id="wuNein">Nein</button>
+        <button class="btn btn--skip" id="wuAbbruch">Abbrechen</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-klartext" class="hide">
+    <div id="klPick">
+      <div class="panel" style="display:grid;gap:12px">
+        <div class="display" style="font-size:1.6rem">Klartext</div>
+        <p style="font-size:.92rem">Drei geführte Gespräche mit Redezeit. Nicht gemütlich, aber nützlich.</p>
+        <div class="row" id="klList"></div>
+        <button class="btn btn--small" id="klHome">Zurück zum Start</button>
+      </div>
+    </div>
+    <div id="klRun" class="hide">
+      <div class="card" id="klCard">
+        <span class="badge m-team" id="klTitle">Format</span>
+        <div class="who" id="klCount"></div>
+        <div class="q small" id="klText"></div>
+        <div class="timer hide" id="klTime">0</div>
+      </div>
+      <div class="row" id="klActions" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <section id="screen-f36" class="hide">
+    <div class="card" id="f36Card">
+      <span class="badge m-quiz" id="f36Stufe">Stufe</span>
+      <div class="who" id="f36Count"></div>
+      <div class="q small" id="f36Text"></div>
+    </div>
+    <div class="row" id="f36Actions" style="margin-top:14px"></div>
+  </section>
+
+  <section id="screen-ziele" class="hide">
+    <div class="panel" style="display:grid;gap:12px">
+      <div class="display" style="font-size:1.6rem">Wir-Liste</div>
+      <p style="font-size:.92rem">Was ihr euch zusammen vorgenommen habt. Bleibt gespeichert, bis ihr es abhakt.</p>
+      <div class="row two" style="grid-template-columns:1fr auto">
+        <input type="text" id="zielInput" placeholder="Eigenes Ziel eintippen" maxlength="90" autocomplete="off">
+        <button class="btn btn--yes" id="zielAdd" style="width:auto;padding:14px 18px">Dazu</button>
+      </div>
+      <div class="mylist" id="zielList"></div>
+      <p class="hint" id="zielProgress"></p>
+      <span class="label">Vorschläge zum Antippen</span>
+      <div class="chips" id="zielVorschlaege"></div>
+      <button class="btn btn--small" id="zielHome">Zurück zum Start</button>
+    </div>
+  </section>
+
+  <section id="screen-advent" class="hide">
+    <div class="panel" style="display:grid;gap:12px">
+      <div class="display" style="font-size:1.6rem">Adventskalender</div>
+      <p style="font-size:.92rem">24 Türchen: Fragen, kleine Aufgaben und Ideen für den Abend. Eins pro Tag.</p>
+      <div class="advgrid" id="advGrid"></div>
+      <p class="hint" id="advHint"></p>
+      <div class="row two">
+        <button class="btn btn--small" id="advReset">Alle wieder zu</button>
+        <button class="btn btn--small" id="advHome">Zurück zum Start</button>
+      </div>
+    </div>
+    <div id="advRun" class="hide">
+      <div class="card" id="advCard">
+        <span class="badge m-tod" id="advNum">Türchen</span>
+        <div class="who" id="advKind"></div>
+        <div class="q small" id="advText"></div>
+      </div>
+      <div class="row" id="advActions" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <section id="screen-escape" class="hide">
+    <div id="escPick">
+      <div class="panel" style="display:grid;gap:12px">
+        <div class="display" style="font-size:1.6rem">Escape Dinner</div>
+        <p style="font-size:.92rem">Ein Rätselabend beim Essen. Pro Gang ein Gesprächsimpuls und ein Rätsel — gelöst wird am Tisch, die Antwort tippt ihr hier ein.</p>
+        <div class="row" id="escMenus"></div>
+        <button class="btn btn--small" id="escHome">Zurück zum Start</button>
+      </div>
+    </div>
+    <div id="escRun" class="hide">
+      <div class="card" id="escCard">
+        <span class="badge m-draw" id="escStage">Gang</span>
+        <div class="q small" id="escText"></div>
+        <div id="escInputWrap" class="hide" style="margin-top:8px">
+          <input type="text" id="escInput" placeholder="Antwort eintippen" autocomplete="off">
+        </div>
+        <div class="who" id="escMsg" style="margin-top:4px"></div>
+      </div>
+      <div class="row" id="escActions" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <section id="screen-dates" class="hide">
+    <div class="panel" style="display:grid;gap:10px">
+      <div class="display" style="font-size:1.6rem">Date-Ideen</div>
+      <div class="chips" id="dateFo"></div>
+      <div class="chips" id="dateFa"></div>
+      <div class="chips" id="dateFk"></div>
+      <div class="chips" id="dateFs"></div>
+      <p class="hint" id="dateCount"></p>
+    </div>
+    <div style="margin-top:16px">
+      <div class="card" id="dateCard">
+        <span class="badge m-team">Idee</span>
+        <div class="q small" id="dateText"></div>
+        <div class="who" id="dateTags"></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn btn--go" id="dateNew">Andere Idee</button>
+        <button class="btn btn--skip" id="dateShare">Teilen oder kopieren</button>
+        <button class="btn btn--small" id="dateHome">Zurück zum Start</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-notes" class="hide">
+    <div class="panel" style="display:grid;gap:10px">
+      <div class="display" style="font-size:1.6rem">Sticky Notes</div>
+      <p style="font-size:.92rem">Kleine Botschaften zum Hinlegen oder Verschicken.</p>
+      <div class="chips" id="noteCats"></div>
+    </div>
+    <div style="margin-top:16px">
+      <div class="card" id="noteCard">
+        <span class="badge m-memory">Für ihn</span>
+        <div class="q" id="noteText"></div>
+        <div class="who" id="noteMsg"></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn btn--go" id="noteNew">Andere Botschaft</button>
+        <button class="btn btn--cyan" id="noteShare">Teilen oder kopieren</button>
+        <button class="btn btn--small" id="noteHome">Zurück zum Start</button>
+      </div>
+    </div>
+  </section>
 
   <section id="screen-fragen" class="hide">
     <div class="panel" style="display:grid;gap:12px">
@@ -1200,6 +1386,319 @@ var FRAGEN={
   ]}
 };
 
+
+/* ==================== ADVENTSKALENDER ==================== */
+var ADVENT=[
+  {k:"Frage",  t:"Worauf freut ihr euch dieses Jahr am meisten?"},
+  {k:"Aufgabe",t:"Schickt euch heute beide eine Nachricht, die nichts mit Organisation zu tun hat."},
+  {k:"Idee",   t:"Heute Abend: Kerzen an, Handys weg, zwanzig Minuten nur reden."},
+  {k:"Frage",  t:"Welches Weihnachten aus deiner Kindheit ist dir am stärksten geblieben?"},
+  {k:"Aufgabe",t:"Sag ihm heute etwas, das du sonst nur denkst."},
+  {k:"Idee",   t:"Macht einen Spaziergang im Dunkeln. Taschenlampe reicht."},
+  {k:"Frage",  t:"Was war in diesem Jahr euer bester gemeinsamer Tag?"},
+  {k:"Aufgabe",t:"Backt oder kocht heute etwas zusammen, egal wie einfach."},
+  {k:"Frage",  t:"Was hat dich dieses Jahr an ihm überrascht?"},
+  {k:"Idee",   t:"Sucht fünf Fotos aus dem Jahr raus und erzählt euch die Geschichte dazu."},
+  {k:"Aufgabe",t:"Nimm ihm heute eine Aufgabe ab, ohne dass er fragt."},
+  {k:"Frage",  t:"Was wünschst du dir für nächstes Jahr für euch beide?"},
+  {k:"Idee",   t:"Lieblingsmusik an und tanzen. Ein Lied reicht."},
+  {k:"Aufgabe",t:"Schreib drei Dinge auf einen Zettel, die du an ihm magst, und leg ihn irgendwohin."},
+  {k:"Frage",  t:"Welcher Moment in diesem Jahr hat dich stolz gemacht?"},
+  {k:"Idee",   t:"Früh gemütlich machen: Decke, Film, sonst nichts."},
+  {k:"Aufgabe",t:"Ruft zusammen jemanden an, mit dem ihr lange nicht gesprochen habt."},
+  {k:"Frage",  t:"Was war dieses Jahr am schwersten — und was hat geholfen?"},
+  {k:"Idee",   t:"Heißgetränk, warm anziehen, raussetzen, Himmel angucken."},
+  {k:"Aufgabe",t:"Massiert euch abwechselnd fünf Minuten die Schultern."},
+  {k:"Frage",  t:"Was willst du nächstes Jahr unbedingt mit ihm machen?"},
+  {k:"Idee",   t:"Esst heute bei Kerzenlicht, auch wenn es Pizza gibt."},
+  {k:"Aufgabe",t:"Sagt euch, wofür ihr einander dieses Jahr am meisten gebraucht habt."},
+  {k:"Frage",  t:"Was nehmt ihr aus diesem Jahr mit ins nächste? Jeder einen Satz."}
+];
+
+/* ==================== ESCAPE DINNER ==================== */
+var ESCAPE={
+  a:{ label:"Menü A", gaenge:[
+    { gang:"Vorspeise", impuls:"Während ihr esst: Erzählt euch, was ihr heute gut hinbekommen habt.",
+      raetsel:"Ich habe Städte, aber keine Häuser. Berge, aber keine Bäume. Wasser, aber keine Fische. Was bin ich?",
+      loesung:["karte","landkarte","die karte","eine karte"],
+      tipp:"Es liegt oft im Handschuhfach oder steckt heute im Handy." },
+    { gang:"Hauptgang", impuls:"Während ihr esst: Was würdet ihr zusammen machen, wenn das Wochenende drei Tage hätte?",
+      raetsel:"Rechnet: Die Zahl der Buchstaben in LIEBE, mal die Finger an einer Hand, minus die Zahl der Jahreszeiten. Wie lautet das Ergebnis?",
+      loesung:["21","einundzwanzig"],
+      tipp:"Fünf mal fünf, dann vier abziehen." },
+    { gang:"Nachtisch", impuls:"Während ihr esst: Welcher Abend von euch beiden war der beste in diesem Jahr?",
+      raetsel:"Sortiert die Buchstaben zu einem Wort: E S K U S N E",
+      loesung:["kuessen","küssen"],
+      tipp:"Sieben Buchstaben, und ihr könnt es direkt danach machen." }
+  ], finale:{
+      raetsel:"Letzte Frage: Was gehört euch beiden, wird aber von anderen viel öfter benutzt als von euch selbst?",
+      loesung:["name","namen","euer name","unsere namen","eure namen"],
+      tipp:"Ihr sprecht es selten aus, wenn ihr von euch redet.",
+      ende:"Geschafft. Der Abend gehört euch — macht das Licht aus und redet weiter." }
+  },
+  b:{ label:"Menü B", gaenge:[
+    { gang:"Vorspeise", impuls:"Während ihr esst: Was habt ihr aneinander zuerst gemocht?",
+      raetsel:"Je mehr du davon nimmst, desto mehr lässt du zurück. Was ist das?",
+      loesung:["schritte","fussspuren","fußspuren","spuren","fussabdruecke","fußabdrücke"],
+      tipp:"Ihr hinterlasst sie bei jedem Spaziergang." },
+    { gang:"Hauptgang", impuls:"Während ihr esst: Welche Angewohnheit des anderen würdet ihr vermissen?",
+      raetsel:"Rechnet: Die Buchstaben in KUSS, mal die Finger an beiden Händen, minus die Monate im Jahr.",
+      loesung:["28","achtundzwanzig"],
+      tipp:"Vier mal zehn, dann zwölf abziehen." },
+    { gang:"Nachtisch", impuls:"Während ihr esst: Was soll in einem Jahr anders sein als heute?",
+      raetsel:"Sortiert die Buchstaben zu einem Wort: R M E A N U M",
+      loesung:["umarmen"],
+      tipp:"Sieben Buchstaben. Macht es, sobald ihr es habt." }
+  ], finale:{
+      raetsel:"Letzte Frage: Was wird größer, je mehr man davon wegnimmt?",
+      loesung:["loch","ein loch","das loch"],
+      tipp:"Man gräbt es.",
+      ende:"Fertig. Rätsel gelöst, Abend gerettet, Abwasch könnt ihr morgen machen." }
+  }
+};
+
+/* ==================== DATE-IDEEN ==================== */
+var DATES=[
+  {t:"Handys in die Schublade, eine Stunde nur reden.",o:"drinnen",a:"spontan",k:"gratis",s:"alle"},
+  {t:"Die Playlist von früher hören und erzählen, was zu welchem Lied gehört.",o:"drinnen",a:"spontan",k:"gratis",s:"alle"},
+  {t:"Fotos vom letzten Jahr durchgehen und die besten zehn aussuchen.",o:"drinnen",a:"spontan",k:"gratis",s:"alle"},
+  {t:"Abendessen ohne Strom: Kerzen an, Licht aus.",o:"drinnen",a:"spontan",k:"gratis",s:"alle"},
+  {t:"Jeder kocht eine Überraschung aus dem, was gerade da ist.",o:"drinnen",a:"spontan",k:"gratis",s:"alle"},
+  {t:"Ein Album komplett durchhören, ohne nebenbei etwas zu machen.",o:"drinnen",a:"spontan",k:"gratis",s:"alle"},
+  {t:"Massage-Tausch, je zehn Minuten.",o:"drinnen",a:"spontan",k:"gratis",s:"alle"},
+  {t:"Zeichnet euch gegenseitig, zehn Minuten, ohne zu radieren.",o:"drinnen",a:"spontan",k:"gratis",s:"alle"},
+  {t:"Alte Nachrichten von euch beiden lesen.",o:"drinnen",a:"spontan",k:"gratis",s:"alle"},
+  {t:"Eine Schublade zusammen ausmisten, danach gibt's was Gutes.",o:"drinnen",a:"spontan",k:"gratis",s:"alle"},
+  {t:"Kocht ein Gericht, das keiner von euch je gemacht hat.",o:"drinnen",a:"mittel",k:"guenstig",s:"alle"},
+  {t:"Filmabend mit Ansage: der schlechteste Film, den ihr findet.",o:"drinnen",a:"mittel",k:"guenstig",s:"alle"},
+  {t:"Backt etwas, das schiefgehen darf.",o:"drinnen",a:"mittel",k:"guenstig",s:"alle"},
+  {t:"Spieleabend nur zu zweit, drei Runden, Verlierer kocht nächste Woche.",o:"drinnen",a:"mittel",k:"gratis",s:"alle"},
+  {t:"Baut euch ein Lager im Wohnzimmer und schlaft dort.",o:"drinnen",a:"mittel",k:"gratis",s:"alle"},
+  {t:"Wellness daheim: Bad, Musik, Masken, Handys im anderen Zimmer.",o:"drinnen",a:"mittel",k:"guenstig",s:"winter"},
+  {t:"Blindverkostung: drei Weine oder drei Schokoladen aus dem Supermarkt.",o:"drinnen",a:"mittel",k:"guenstig",s:"alle"},
+  {t:"Kocht beide dasselbe Rezept getrennt und vergleicht das Ergebnis.",o:"drinnen",a:"mittel",k:"guenstig",s:"alle"},
+  {t:"Plant den nächsten Urlaub komplett durch, mit Karte und allem.",o:"drinnen",a:"mittel",k:"gratis",s:"winter"},
+  {t:"Schaut euch die Serie an, die der andere liebt und ihr nie zusammen geguckt habt.",o:"drinnen",a:"spontan",k:"gratis",s:"alle"},
+  {t:"Sortiert eure Fotos vom Handy in ein Album und bestellt es.",o:"drinnen",a:"geplant",k:"teurer",s:"alle"},
+  {t:"Schreibt euch je einen Brief, der erst in einem Jahr gelesen wird.",o:"drinnen",a:"mittel",k:"gratis",s:"alle"},
+  {t:"Spaziergang im Dunkeln mit Taschenlampe.",o:"draussen",a:"spontan",k:"gratis",s:"herbst"},
+  {t:"Sonnenaufgang anschauen, danach irgendwo frühstücken.",o:"draussen",a:"mittel",k:"guenstig",s:"alle"},
+  {t:"Radtour ohne Ziel: an jeder Kreuzung entscheidet abwechselnd einer.",o:"draussen",a:"spontan",k:"gratis",s:"sommer"},
+  {t:"Sterne gucken mit Decke und Thermoskanne.",o:"draussen",a:"spontan",k:"gratis",s:"herbst"},
+  {t:"Mit dem Hund eine Route laufen, die ihr noch nie gegangen seid.",o:"draussen",a:"spontan",k:"gratis",s:"alle"},
+  {t:"Picknick aus dem, was im Kühlschrank liegt.",o:"draussen",a:"spontan",k:"gratis",s:"sommer"},
+  {t:"Im Regen spazieren gehen, danach heiß duschen.",o:"draussen",a:"spontan",k:"gratis",s:"herbst"},
+  {t:"Eis essen fahren, auch wenn es kalt ist.",o:"draussen",a:"spontan",k:"guenstig",s:"alle"},
+  {t:"Tagesausflug in einen Ort, in dem ihr beide noch nie wart.",o:"draussen",a:"geplant",k:"guenstig",s:"alle"},
+  {t:"Flohmarkt, und jeder sucht ein Geschenk für den anderen unter zehn Euro.",o:"draussen",a:"geplant",k:"guenstig",s:"sommer"},
+  {t:"Kanu oder Ruderboot leihen.",o:"draussen",a:"geplant",k:"teurer",s:"sommer"},
+  {t:"Wandern mit Einkehr, mindestens zwei Stunden.",o:"draussen",a:"geplant",k:"guenstig",s:"alle"},
+  {t:"Tierpark oder Zoo, wie früher.",o:"draussen",a:"geplant",k:"teurer",s:"alle"},
+  {t:"Konzert von jemandem, den ihr beide nicht kennt.",o:"draussen",a:"geplant",k:"teurer",s:"alle"},
+  {t:"Schwimmbad oder Therme unter der Woche, wenn kaum was los ist.",o:"draussen",a:"geplant",k:"teurer",s:"winter"},
+  {t:"Weihnachtsmarkt in einem Ort, in dem ihr noch nie wart.",o:"draussen",a:"geplant",k:"guenstig",s:"winter"},
+  {t:"Minigolf mit Einsatz: Verlierer übernimmt eine Woche den Abwasch.",o:"draussen",a:"mittel",k:"guenstig",s:"sommer"},
+  {t:"Geocaching in eurer Gegend.",o:"draussen",a:"mittel",k:"gratis",s:"alle"},
+  {t:"Grillen, auch im Winter, mit warmen Jacken.",o:"draussen",a:"mittel",k:"guenstig",s:"alle"},
+  {t:"Drachen steigen lassen oder Boule im Park.",o:"draussen",a:"mittel",k:"guenstig",s:"herbst"},
+  {t:"Beeren oder Äpfel selber pflücken und daraus abends was machen.",o:"draussen",a:"mittel",k:"guenstig",s:"sommer"},
+  {t:"Fahrt zum Wasser, egal welches, und bleibt bis es dunkel wird.",o:"draussen",a:"mittel",k:"guenstig",s:"sommer"},
+  {t:"Frühjahrsputz im Garten, danach erstes Essen draußen.",o:"draussen",a:"geplant",k:"gratis",s:"fruehling"},
+  {t:"Baumarkt-Runde und ein kleines Projekt, das ihr am selben Tag fertig macht.",o:"draussen",a:"geplant",k:"guenstig",s:"fruehling"},
+  {t:"Eine Nacht woanders schlafen, auch wenn es nur dreißig Kilometer weg ist.",o:"draussen",a:"geplant",k:"teurer",s:"alle"}
+];
+var DFILTER={
+  o:[{id:"egal",label:"Ort egal"},{id:"drinnen",label:"Drinnen"},{id:"draussen",label:"Draußen"}],
+  a:[{id:"egal",label:"Aufwand egal"},{id:"spontan",label:"Spontan"},{id:"mittel",label:"Mittel"},{id:"geplant",label:"Geplant"}],
+  k:[{id:"egal",label:"Kosten egal"},{id:"gratis",label:"Gratis"},{id:"guenstig",label:"Günstig"},{id:"teurer",label:"Darf was kosten"}],
+  s:[{id:"egal",label:"Jederzeit"},{id:"fruehling",label:"Frühling"},{id:"sommer",label:"Sommer"},{id:"herbst",label:"Herbst"},{id:"winter",label:"Winter"}]
+};
+
+/* ==================== STICKY NOTES ==================== */
+var NOTES={
+  lieb:{ label:"Lieb", cards:[
+    "Ich bin froh, dass es dich gibt.",
+    "Denk heute mal dran, wie gut du das eigentlich machst.",
+    "Danke für gestern. Hab's gemerkt.",
+    "Ich hab an dich gedacht. Einfach so.",
+    "Komm gut durch den Tag. Ich bin hier.",
+    "Du musst heute nichts leisten, damit ich dich mag.",
+    "Freu mich auf heute Abend mit dir.",
+    "Falls dich heute jemand ärgert: Ich bin auf deiner Seite.",
+    "Du bist mein Lieblingsmensch. Auch montags.",
+    "Ich wüsste nicht, mit wem sonst.",
+    "Erinner mich heute Abend daran, dir was zu erzählen.",
+    "Mach langsam. Es läuft nichts weg."
+  ]},
+  frech:{ label:"Frech", cards:[
+    "Heute Abend bist du dran. Überleg dir was.",
+    "Ich hab Pläne mit dir. Zieh was Bequemes an.",
+    "Denk mal kurz an letzte Nacht. Gern geschehen.",
+    "Komm früher heim. Ich hab was vor.",
+    "Du sahst heute Morgen verdammt gut aus. Nur damit du's weißt.",
+    "Räum den Tisch nicht ab. Ich brauch ihn noch.",
+    "Wenn du das liest, bist du schon zu spät.",
+    "Ich zähl die Stunden. Nicht wegen des Abendessens.",
+    "Vorschlag: Du duschst, ich mach das Licht aus.",
+    "Heute keine Serie."
+  ]},
+  alltag:{ label:"Alltag", cards:[
+    "Kaffee ist durch.",
+    "Schau mal in den Kühlschrank, da ist was für dich.",
+    "Ich kümmer mich heute drum. Lass liegen.",
+    "Ruh dich aus. Der Rest läuft nicht weg.",
+    "Denk an deinen Termin. Du packst das.",
+    "Ich hab das Ding erledigt, das dich genervt hat.",
+    "Pause machen zählt auch als was geschafft.",
+    "Essen steht im Ofen.",
+    "Ich hab eingekauft. Du schuldest mir nichts.",
+    "Heute übernehme ich den Hund."
+  ]}
+};
+
+
+/* ==================== WUNSCH-ABGLEICH ==================== */
+var WUNSCH=[
+  {g:"Nähe", t:"Längeres Vorspiel, ohne Eile"},
+  {g:"Nähe", t:"Massage mit Öl, richtig lang"},
+  {g:"Nähe", t:"Zusammen duschen oder baden"},
+  {g:"Nähe", t:"Einfach nackt nebeneinander liegen, ohne dass es weitergeht"},
+  {g:"Nähe", t:"Danach liegen bleiben und reden"},
+  {g:"Nähe", t:"Küssen, bis einer nicht mehr kann"},
+  {g:"Zeit", t:"Morgens statt abends"},
+  {g:"Zeit", t:"Verabredeter Termin statt spontan"},
+  {g:"Zeit", t:"Quickie zwischendurch"},
+  {g:"Zeit", t:"Ein ganzes Wochenende nur für uns"},
+  {g:"Zeit", t:"Nachrichten tagsüber, die Vorfreude machen"},
+  {g:"Ort",  t:"Woanders als im Schlafzimmer"},
+  {g:"Ort",  t:"Unter der Dusche"},
+  {g:"Ort",  t:"Im Hotel"},
+  {g:"Ort",  t:"Draußen, aber ungestört"},
+  {g:"Ort",  t:"Vor dem Spiegel"},
+  {g:"Spiel",t:"Einer führt, einer lässt sich führen"},
+  {g:"Spiel",t:"Dirty Talk"},
+  {g:"Spiel",t:"Augenbinde"},
+  {g:"Spiel",t:"Hände festhalten oder locker fesseln"},
+  {g:"Spiel",t:"Etwas rauer: Beißen, Kratzen, Festhalten"},
+  {g:"Spiel",t:"Sehr sanft und langsam, ohne Ziel"},
+  {g:"Spiel",t:"Rollenspiel"},
+  {g:"Spiel",t:"Einer entscheidet alles, der andere lässt es zu"},
+  {g:"Spiel",t:"Temperatur: Eis oder Wärme"},
+  {g:"Mehr", t:"Spielzeug benutzen"},
+  {g:"Mehr", t:"Spielzeug zusammen aussuchen"},
+  {g:"Mehr", t:"Neues Gleitmittel ausprobieren"},
+  {g:"Mehr", t:"Unterwäsche füreinander aussuchen"},
+  {g:"Mehr", t:"Fotos, die nur bei uns bleiben"},
+  {g:"Mehr", t:"Zusammen was anschauen"},
+  {g:"Mehr", t:"Gegenseitig zuschauen"},
+  {g:"Reden",t:"Über Fantasien reden, ohne sie umzusetzen"},
+  {g:"Reden",t:"Sagen, was gerade gut war, direkt danach"},
+  {g:"Reden",t:"Ein festes Wort, mit dem sofort Schluss ist"}
+];
+
+/* ==================== KLARTEXT ==================== */
+var KLARTEXT=[
+  { id:"checkin", title:"Wochen-Check-in", sub:"Zwanzig Minuten, einmal die Woche. Hält vieles klein, bevor es groß wird.",
+    steps:[
+      {t:"Setzt euch so hin, dass ihr euch anschaut. Handys weg. Jeder nennt zwei Dinge, die diese Woche gut waren.", sec:120},
+      {t:"Einer erzählt, was ihn diese Woche belastet hat. Der andere hört nur zu — nicht lösen, nicht erklären.", sec:180, rolle:"Einer redet"},
+      {t:"Rollentausch: Jetzt erzählt der andere, was ihn belastet hat. Wieder nur zuhören.", sec:180, rolle:"Der andere redet"},
+      {t:"Was braucht ihr in der kommenden Woche voneinander? Jeder sagt eine konkrete Sache.", sec:120},
+      {t:"Gibt es etwas Unausgesprochenes zwischen euch? Jetzt wäre der Moment.", sec:180},
+      {t:"Termine, Absprachen, wer macht was. Der organisatorische Teil, damit er nicht abends im Bett landet.", sec:120},
+      {t:"Zum Schluss: Jeder sagt eine Sache, die er am anderen diese Woche geschätzt hat."}
+    ]},
+  { id:"streit", title:"Wenn's kracht", sub:"Nach einem Streit, wenn ihr beide wieder ansprechbar seid. Streng abwechselnd.",
+    steps:[
+      {t:"Einigt euch, wer anfängt. Regel für die nächsten Minuten: Nur wer dran ist, redet. Der andere hört zu und unterbricht nicht.", },
+      {t:"Erster erzählt: Was ist passiert, und was hat es mit dir gemacht? Sprich von dir, nicht über ihn.", sec:180, rolle:"Erster redet"},
+      {t:"Der Zuhörer fasst zusammen, was er verstanden hat. Keine Gegenrede, keine Rechtfertigung. Nur: Das habe ich verstanden.", sec:120, rolle:"Zuhörer fasst zusammen"},
+      {t:"Der Erste korrigiert, falls etwas nicht stimmt. Wiederholt das, bis es passt.", sec:60},
+      {t:"Rollentausch. Jetzt erzählt der andere, was es mit ihm gemacht hat.", sec:180, rolle:"Zweiter redet"},
+      {t:"Jetzt fasst der Erste zusammen, was er verstanden hat. Auch hier: keine Gegenrede.", sec:120, rolle:"Zusammenfassen"},
+      {t:"Beide: Was war mein Anteil daran? Jeder nennt einen, ohne ein Aber dranzuhängen.", sec:120},
+      {t:"Was ist der nächste kleine Schritt, damit das nicht wieder genauso läuft? Einigt euch auf genau einen."}
+    ]},
+  { id:"danke", title:"Wertschätzung", sub:"Zehn Minuten. Fühlt sich am Anfang albern an, wirkt trotzdem.",
+    steps:[
+      {t:"Jeder nennt drei Dinge, die der andere in den letzten Tagen gemacht hat und die gut waren. Konkret, keine Allgemeinplätze.", sec:180},
+      {t:"Jeder sagt: Was ich an dir habe, das mir nicht selbstverständlich ist, ist ...", sec:120},
+      {t:"Erzählt euch, wann ihr euch zuletzt aufeinander verlassen habt.", sec:120},
+      {t:"Jeder nennt eine Eigenschaft am anderen, die er gern von ihm lernen würde.", sec:120},
+      {t:"Zum Schluss: Bedankt euch für etwas, das schon länger her ist und nie richtig gewürdigt wurde."}
+    ]}
+];
+
+/* ==================== 36 FRAGEN ==================== */
+var F36=[
+  { stufe:"Stufe 1 — Neugier", intro:"Zwölf Fragen zum Anwärmen. Beide antworten, einer liest vor.", fragen:[
+    "Wen aus deinem Leben würdest du gern nochmal an einen Tisch holen?",
+    "Was würdest du tun, wenn Geld und die Meinung anderer keine Rolle spielten?",
+    "Wie sieht dein perfekter Tag aus, von morgens bis abends?",
+    "Was kannst du gut, das kaum jemand von dir weiß?",
+    "Welche Fähigkeit hättest du gern über Nacht?",
+    "Was hat dich zuletzt richtig begeistert?",
+    "Welchen Ort auf der Welt musst du noch sehen?",
+    "Nennt drei Dinge, die ihr beide offensichtlich gemeinsam habt.",
+    "Wofür bist du in deinem Leben am dankbarsten?",
+    "Was war die beste Entscheidung deines Lebens?",
+    "Welche Rolle spielt Glück für dich — und hattest du welches?",
+    "Was willst du in zehn Jahren über dich sagen können?"
+  ]},
+  { stufe:"Stufe 2 — Näher", intro:"Jetzt wird es persönlicher. Wenn einer aussteigen will, ist das in Ordnung.", fragen:[
+    "Was ist deine schönste Erinnerung?",
+    "Und was die schlimmste?",
+    "Wenn du wüsstest, dass du in einem Jahr stirbst — was würdest du ändern?",
+    "Was bedeutet Freundschaft für dich?",
+    "Welche Rolle spielt Zuneigung in deinem Leben?",
+    "Sag etwas, das du am anderen magst und noch nie ausgesprochen hast.",
+    "Wie nah fühlst du dich deiner Familie?",
+    "Wie war deine Kindheit, verglichen mit der von anderen?",
+    "Was würdest du anpacken, wenn Angst keine Rolle spielen würde?",
+    "Woran scheiterst du immer wieder?",
+    "Was bereust du?",
+    "Welche Eigenschaft an dir magst du am liebsten?"
+  ]},
+  { stufe:"Stufe 3 — Tief", intro:"Der letzte Teil. Nehmt euch Zeit, und bleibt danach noch sitzen.", fragen:[
+    "Wenn du heute Abend nicht mehr reden könntest — was hättest du ihm gern noch gesagt?",
+    "Was ist dir zu wichtig, um Witze darüber zu machen?",
+    "Was am anderen rührt dich?",
+    "Wann hast du zuletzt vor jemandem geweint? Und wann allein?",
+    "Welches Problem würdest du am liebsten abgeben?",
+    "Was wäre für dich das Schlimmste, was passieren könnte?",
+    "Wenn du einen Menschen zurückholen könntest — wen?",
+    "Was soll der andere tun, wenn es dir richtig schlecht geht?",
+    "Was weiß niemand über dich?",
+    "Wofür willst du in Erinnerung bleiben?",
+    "Was glaubst du, wie der andere dich sieht?",
+    "Was wünschst du dir von ihm und hast dich nie getraut zu fragen?"
+  ]}
+];
+
+/* ==================== WIR-LISTE ==================== */
+var ZIELE_VORSCHLAEGE=[
+  "Einmal im Monat ein Date ohne Handy",
+  "Eine Reise an einen Ort, an dem keiner von uns war",
+  "Zusammen etwas Neues lernen",
+  "Jeden Sonntag zwanzig Minuten Check-in",
+  "Ein Wochenende ohne Termine, einmal im Quartal",
+  "Mehr zusammen draußen sein",
+  "Den Garten fertig machen",
+  "Einmal im Jahr zwei Tage allein wegfahren",
+  "Jeden Abend zehn Minuten reden, bevor der Fernseher angeht",
+  "Gemeinsam etwas Sportliches anfangen",
+  "Papierkram einmal komplett aufarbeiten",
+  "Ein Fotobuch vom Jahr machen",
+  "Einmal im Monat zusammen kochen, richtig aufwendig",
+  "Freunde öfter einladen",
+  "Einen festen Abend pro Woche nur für uns",
+  "Eine alte Freundschaft wieder aufleben lassen",
+  "Zusammen sparen für etwas Größeres",
+  "Einen Kurs zusammen machen",
+  "Mehr Zeit mit der Familie des anderen",
+  "Jeder einen Abend pro Woche ganz für sich"
+];
+
 var MODES = [
   {id:"quiz",  label:"Partner-Quiz"},
   {id:"either",label:"Entweder / Oder"},
@@ -1230,7 +1729,7 @@ var S = {
   modes:["quiz","either","dare","tod","who","blitz","draw","memory","team"],
   levels:["locker","nah"], pick:"self", goal:"p15", round:0,
   jokerOn:true, penalty:true, sound:true, joker:[1,1],
-  evening:{done:[],notes:[]},
+  evening:{done:[],notes:[]}, advent:[], ziele:[], wunsch:{a:{0:{},1:{}},done:[false,false]},
   custom:{}, favs:[], stats:{games:0,rounds:0,wins:[0,0],ties:0,chicken:[0,0],bestWave:0},
   queues:{}, current:null, undo:null, rotateIdx:0, finished:false
 };
@@ -1245,7 +1744,7 @@ function save(){
   try{
     localStorage.setItem("zuzweit3", JSON.stringify({
       n:S.names, s:S.scores, w:S.wave, m:S.modes, l:S.levels, p:S.pick, g:S.goal, r:S.round,
-      jo:S.jokerOn, pe:S.penalty, so:S.sound, j:S.joker, c:S.custom, f:S.favs, st:S.stats, ev:S.evening
+      jo:S.jokerOn, pe:S.penalty, so:S.sound, j:S.joker, c:S.custom, f:S.favs, st:S.stats, ev:S.evening, ad:S.advent, zi:S.ziele, wu:S.wunsch
     }));
   }catch(e){}
 }
@@ -1268,6 +1767,9 @@ function load(){
     if(d.f) S.favs=d.f;
     if(d.st) S.stats=d.st;
     if(d.ev) S.evening={done:d.ev.done||[], notes:d.ev.notes||[]};
+    if(d.ad) S.advent=d.ad;
+    if(d.zi) S.ziele=d.zi;
+    if(d.wu && d.wu.a) S.wunsch={a:{0:d.wu.a[0]||{},1:d.wu.a[1]||{}}, done:d.wu.done||[false,false]};
     if(d.c) S.custom=mergeCustom(emptyCustom(), d.c);
   }catch(e){}
 }
@@ -1377,7 +1879,7 @@ function renderStart(){
   $("poolHint").textContent = poolSize()+" Karten im Stapel"+(mine?", davon "+mine+" eigene":"")+". Leer? Wird neu gemischt.";
 }
 function show(screen){
-  ["screen-start","screen-game","screen-final","screen-edit","screen-evening","screen-minutes","screen-fragen"].forEach(function(id){
+  ["screen-start","screen-game","screen-final","screen-edit","screen-evening","screen-minutes","screen-fragen","screen-advent","screen-escape","screen-dates","screen-notes","screen-wunsch","screen-klartext","screen-f36","screen-ziele"].forEach(function(id){
     $(id).classList.toggle("hide", id!==screen);
   });
   window.scrollTo(0,0);
@@ -1393,6 +1895,14 @@ $("statBtn").onclick=function(){ openStats(); };
 $("evBtn").onclick=function(){ openEvening(); };
 $("minBtn").onclick=function(){ openMinutes(); };
 $("fragBtn").onclick=function(){ openFragen(); };
+$("advBtn").onclick=function(){ openAdvent(); };
+$("escBtn").onclick=function(){ openEscape(); };
+$("dateBtn").onclick=function(){ openDates(); };
+$("noteBtn").onclick=function(){ openNotes(); };
+$("wuBtn").onclick=function(){ openWunsch(); };
+$("klBtn").onclick=function(){ openKlartext(); };
+$("f36Btn").onclick=function(){ open36(); };
+$("zielBtn").onclick=function(){ openZiele(); };
 
 /* ==================== ANZEIGE ==================== */
 function paintScores(){
@@ -2222,6 +2732,466 @@ $("fragFav").onclick=function(){
   $("fragHint").textContent = dup ? "Die Frage hast du dir schon gemerkt." : "Gemerkt. Steht bei den eigenen Karten.";
 };
 $("fragHome").onclick=function(){ renderStart(); show("screen-start"); };
+
+
+/* ==================== ADVENTSKALENDER: ABLAUF ==================== */
+function openAdvent(){
+  renderAdvent(); show("screen-advent");
+}
+function adventOpenable(i){
+  var now=new Date();
+  if(now.getMonth()!==11) return false;
+  return now.getDate() >= (i+1);
+}
+function renderAdvent(){
+  $("advRun").classList.add("hide");
+  $("advGrid").parentElement.classList.remove("hide");
+  var g=$("advGrid"); g.innerHTML="";
+  ADVENT.forEach(function(d,i){
+    var open=S.advent.indexOf(i)>-1;
+    var b=document.createElement("button");
+    b.type="button"; b.className="door"+(open?" done":"");
+    b.textContent=(i+1);
+    b.onclick=function(){ openDoor(i); };
+    g.appendChild(b);
+  });
+  var now=new Date();
+  $("advHint").textContent = (now.getMonth()===11)
+    ? "Heute ist der "+now.getDate()+". Dezember. Alles bis dahin ist offen."
+    : "Es ist gerade kein Dezember. Ihr könnt die Türchen trotzdem öffnen, wenn ihr wollt.";
+}
+function openDoor(i){
+  var d=ADVENT[i], already=S.advent.indexOf(i)>-1;
+  var erlaubt = already || adventOpenable(i);
+  $("advGrid").parentElement.classList.add("hide");
+  $("advRun").classList.remove("hide");
+  $("advNum").textContent="Türchen "+(i+1);
+  $("advActions").innerHTML="";
+  if(!erlaubt){
+    $("advKind").textContent="Noch zu";
+    $("advText").textContent="Dieses Türchen ist für den "+(i+1)+". Dezember gedacht.";
+    var b=document.createElement("button");
+    b.className="btn btn--pink"; b.textContent="Trotzdem öffnen";
+    b.onclick=function(){ S.advent.push(i); save(); openDoor(i); };
+    $("advActions").appendChild(b);
+  }else{
+    if(!already){ S.advent.push(i); save(); tone(760,140); setTimeout(function(){ tone(980,180); },150); }
+    $("advKind").textContent=d.k;
+    $("advText").textContent=d.t;
+  }
+  var z=document.createElement("button");
+  z.className="btn btn--small"; z.textContent="Zurück zum Kalender";
+  z.onclick=function(){ renderAdvent(); };
+  $("advActions").appendChild(z);
+  var c=$("advCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+}
+$("advReset").onclick=function(){ S.advent=[]; save(); renderAdvent(); };
+$("advHome").onclick=function(){ renderStart(); show("screen-start"); };
+
+/* ==================== ESCAPE DINNER: ABLAUF ==================== */
+var ESC={ menu:"a", idx:0, phase:"intro", tries:0 };
+function openEscape(){
+  $("escPick").classList.remove("hide");
+  $("escRun").classList.add("hide");
+  var host=$("escMenus"); host.innerHTML="";
+  Object.keys(ESCAPE).forEach(function(k,i){
+    var b=document.createElement("button");
+    b.className="btn "+(i%2?"btn--cyan":"btn--pink");
+    b.textContent=ESCAPE[k].label+" — drei Gänge, drei Rätsel";
+    b.onclick=function(){ ESC={menu:k, idx:0, phase:"intro", tries:0}; runEscape(); };
+    host.appendChild(b);
+  });
+  show("screen-escape");
+}
+function escCheck(input, loesungen){
+  var v=String(input||"").toLowerCase().replace(/[^a-zäöüß0-9]/g,"");
+  for(var i=0;i<loesungen.length;i++){
+    if(loesungen[i].toLowerCase().replace(/[^a-zäöüß0-9]/g,"")===v) return true;
+  }
+  return false;
+}
+function runEscape(){
+  var m=ESCAPE[ESC.menu];
+  $("escPick").classList.add("hide");
+  $("escRun").classList.remove("hide");
+  $("escInputWrap").classList.add("hide");
+  $("escMsg").textContent="";
+  $("escActions").innerHTML="";
+  var c=$("escCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+
+  var finale = (ESC.idx>=m.gaenge.length);
+  var teil = finale ? m.finale : m.gaenge[ESC.idx];
+
+  if(!finale && ESC.phase==="intro"){
+    $("escStage").textContent=teil.gang;
+    $("escText").textContent=teil.impuls;
+    addEsc("Rätsel aufdecken","btn--go",function(){ ESC.phase="raetsel"; ESC.tries=0; runEscape(); });
+    return;
+  }
+  if(finale && ESC.phase==="fertig"){
+    $("escStage").textContent="Gelöst";
+    $("escText").textContent=m.finale.ende;
+    addEsc("Noch ein Menü","btn--cyan",function(){ openEscape(); });
+    addEsc("Zurück zum Start","btn--small",function(){ renderStart(); show("screen-start"); });
+    return;
+  }
+
+  $("escStage").textContent = finale ? "Finale" : (teil.gang+" — Rätsel");
+  $("escText").textContent = teil.raetsel;
+  $("escInputWrap").classList.remove("hide");
+  $("escInput").value="";
+  addEsc("Antwort prüfen","btn--yes",function(){
+    if(escCheck($("escInput").value, teil.loesung)){
+      goodSound();
+      if(finale){ ESC.phase="fertig"; runEscape(); return; }
+      ESC.idx++; ESC.phase="intro"; runEscape(); return;
+    }
+    ESC.tries++;
+    badSound();
+    $("escMsg").textContent = ESC.tries>=2 ? "Noch nicht. Tipp: "+teil.tipp : "Nicht ganz. Nochmal.";
+  });
+  addEsc("Tipp","btn--cyan",function(){ $("escMsg").textContent="Tipp: "+teil.tipp; });
+  addEsc("Überspringen","btn--skip",function(){
+    if(finale){ ESC.phase="fertig"; } else { ESC.idx++; ESC.phase="intro"; }
+    runEscape();
+  });
+}
+function addEsc(label,cls,fn){
+  var b=document.createElement("button");
+  b.className="btn "+(cls||""); b.textContent=label; b.onclick=fn;
+  $("escActions").appendChild(b); return b;
+}
+$("escHome").onclick=function(){ renderStart(); show("screen-start"); };
+
+/* ==================== DATE-IDEEN ==================== */
+var DF={ o:"egal", a:"egal", k:"egal", s:"egal" };
+function openDates(){ renderDateFilters(); drawDate(); show("screen-dates"); }
+function dateMatches(){
+  return DATES.filter(function(d){
+    if(DF.o!=="egal" && d.o!==DF.o) return false;
+    if(DF.a!=="egal" && d.a!==DF.a) return false;
+    if(DF.k!=="egal" && d.k!==DF.k) return false;
+    if(DF.s!=="egal" && d.s!=="alle" && d.s!==DF.s) return false;
+    return true;
+  });
+}
+function renderDateFilters(){
+  ["o","a","k","s"].forEach(function(key){
+    chipRow("dateF"+key, DFILTER[key],
+      function(id){ return DF[key]===id; },
+      function(id){ DF[key]=id; renderDateFilters(); drawDate(); }, "opt");
+  });
+}
+function drawDate(){
+  var list=dateMatches();
+  $("dateCount").textContent=list.length+" Ideen passen zu den Filtern.";
+  if(!list.length){
+    $("dateText").textContent="Nichts gefunden. Nimm einen Filter raus.";
+    return;
+  }
+  var d=list[Math.floor(Math.random()*list.length)];
+  $("dateText").textContent=d.t;
+  var tags=[];
+  tags.push(d.o==="drinnen"?"Drinnen":"Draußen");
+  tags.push({spontan:"Spontan",mittel:"Mittlerer Aufwand",geplant:"Geplant"}[d.a]);
+  tags.push({gratis:"Gratis",guenstig:"Günstig",teurer:"Kostet was"}[d.k]);
+  if(d.s!=="alle") tags.push({fruehling:"Frühling",sommer:"Sommer",herbst:"Herbst",winter:"Winter"}[d.s]);
+  $("dateTags").textContent=tags.join(" · ");
+  var c=$("dateCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+}
+function shareText(text, msgEl){
+  if(navigator.share){
+    navigator.share({text:text}).catch(function(){});
+    return;
+  }
+  try{
+    navigator.clipboard.writeText(text).then(function(){
+      if(msgEl) msgEl.textContent="Kopiert. Kannst du jetzt einfügen.";
+    }).catch(function(){
+      if(msgEl) msgEl.textContent="Kopieren hat nicht geklappt — markier den Text von Hand.";
+    });
+  }catch(e){
+    if(msgEl) msgEl.textContent="Kopieren hat nicht geklappt — markier den Text von Hand.";
+  }
+}
+$("dateNew").onclick=function(){ drawDate(); };
+$("dateShare").onclick=function(){ shareText($("dateText").textContent, $("dateCount")); };
+$("dateHome").onclick=function(){ renderStart(); show("screen-start"); };
+
+/* ==================== STICKY NOTES ==================== */
+var NT={ cat:"lieb", card:"" };
+function openNotes(){
+  chipRow("noteCats", Object.keys(NOTES).map(function(k){ return {id:k,label:NOTES[k].label}; }),
+    function(id){ return NT.cat===id; },
+    function(id){ NT.cat=id; openNotes(); drawNote(); });
+  if(!NT.card) drawNote();
+  show("screen-notes");
+}
+function drawNote(){
+  var arr=NOTES[NT.cat].cards;
+  var pick=arr[Math.floor(Math.random()*arr.length)], guard=0;
+  while(pick===NT.card && arr.length>1 && guard++<10) pick=arr[Math.floor(Math.random()*arr.length)];
+  NT.card=pick;
+  $("noteText").textContent=pick;
+  $("noteMsg").textContent="";
+  var c=$("noteCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+}
+$("noteNew").onclick=function(){ drawNote(); };
+$("noteShare").onclick=function(){ shareText(NT.card, $("noteMsg")); };
+$("noteHome").onclick=function(){ renderStart(); show("screen-start"); };
+
+
+/* ==================== WUNSCH-ABGLEICH: ABLAUF ==================== */
+var WU={ who:0, idx:0 };
+function openWunsch(){
+  $("wuRun").classList.add("hide");
+  $("wuResult").classList.add("hide");
+  $("wuIntro").classList.remove("hide");
+  var fertig = S.wunsch.done[0] && S.wunsch.done[1];
+  $("wuState").textContent = fertig
+    ? "Beide sind durch. Ihr könnt euch das Ergebnis anschauen oder neu anfangen."
+    : (S.wunsch.done[0] || S.wunsch.done[1]
+        ? "Einer von euch ist schon durch. Der andere fehlt noch."
+        : "Noch niemand hat angefangen.");
+  $("wuResultBtn").classList.toggle("hide", !fertig);
+  var host=$("wuStart"); host.innerHTML="";
+  [0,1].forEach(function(i){
+    var b=document.createElement("button");
+    b.className="btn "+(i?"btn--cyan":"btn--pink");
+    b.textContent=(S.wunsch.done[i]?"Nochmal: ":"")+S.names[i]+" ist dran";
+    b.onclick=function(){ WU={who:i, idx:0}; S.wunsch.a[i]={}; S.wunsch.done[i]=false; save(); runWunsch(); };
+    host.appendChild(b);
+  });
+  show("screen-wunsch");
+}
+function runWunsch(){
+  if(WU.idx>=WUNSCH.length){
+    S.wunsch.done[WU.who]=true; save();
+    $("wuRun").classList.add("hide");
+    openWunsch();
+    $("wuState").textContent = (S.wunsch.done[0]&&S.wunsch.done[1])
+      ? "Beide durch. Schaut euch an, wo ihr euch einig seid."
+      : "Fertig. Gib das Handy weiter, ohne zu reden — der andere sieht deine Antworten nie.";
+    return;
+  }
+  $("wuIntro").classList.add("hide");
+  $("wuResult").classList.add("hide");
+  $("wuRun").classList.remove("hide");
+  var item=WUNSCH[WU.idx];
+  $("wuWho").textContent=S.names[WU.who]+" — "+(WU.idx+1)+" von "+WUNSCH.length;
+  $("wuGroup").textContent=item.g;
+  $("wuText").textContent=item.t;
+  var c=$("wuCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+}
+function wuAnswer(v){
+  S.wunsch.a[WU.who][WU.idx]=v;
+  WU.idx++; save(); runWunsch();
+}
+$("wuJa").onclick=function(){ wuAnswer(2); };
+$("wuVielleicht").onclick=function(){ wuAnswer(1); };
+$("wuNein").onclick=function(){ wuAnswer(0); };
+$("wuAbbruch").onclick=function(){ openWunsch(); };
+$("wuResultBtn").onclick=function(){
+  var ja=[], viel=[];
+  WUNSCH.forEach(function(item,i){
+    var x=S.wunsch.a[0][i], y=S.wunsch.a[1][i];
+    if(x===undefined||y===undefined) return;
+    if(x===2 && y===2) ja.push(item.t);
+    else if(x>=1 && y>=1) viel.push(item.t);
+  });
+  $("wuIntro").classList.add("hide");
+  $("wuResult").classList.remove("hide");
+  var host=$("wuLists"); host.innerHTML="";
+  function block(title, arr, note){
+    var h=document.createElement("span"); h.className="label"; h.textContent=title+" ("+arr.length+")";
+    host.appendChild(h);
+    if(!arr.length){
+      var p=document.createElement("p"); p.className="hint"; p.textContent=note;
+      host.appendChild(p); return;
+    }
+    arr.forEach(function(t){
+      var row=document.createElement("div"); row.className="myitem";
+      var s=document.createElement("span"); s.textContent=t;
+      row.appendChild(s); host.appendChild(row);
+    });
+  }
+  block("Beide: Ja", ja, "Hier gab es keine Übereinstimmung. Das ist kein Urteil über irgendwen.");
+  var sp=document.createElement("div"); sp.style.height="10px"; host.appendChild(sp);
+  block("Beide mindestens Vielleicht", viel, "Nichts dabei.");
+  var info=document.createElement("p"); info.className="hint";
+  info.textContent="Alles andere bleibt ungesagt. Wer was abgelehnt hat, steht nirgends — auch nicht für den anderen.";
+  host.appendChild(info);
+  show("screen-wunsch");
+};
+$("wuReset").onclick=function(){
+  S.wunsch={a:{0:{},1:{}}, done:[false,false]}; save(); openWunsch();
+};
+$("wuHome").onclick=function(){ renderStart(); show("screen-start"); };
+
+/* ==================== KLARTEXT: ABLAUF ==================== */
+var KL={ f:0, step:0, timer:null };
+function openKlartext(){
+  klStopTimer();
+  $("klRun").classList.add("hide");
+  $("klPick").classList.remove("hide");
+  var host=$("klList"); host.innerHTML="";
+  KLARTEXT.forEach(function(f,i){
+    var b=document.createElement("button");
+    b.className="btn "+(["btn--pink","btn--cyan","btn--yes"][i%3]);
+    b.style.textAlign="left";
+    var t=document.createElement("div");
+    t.style.fontFamily="'Bungee',sans-serif"; t.style.fontSize="1.05rem"; t.textContent=f.title;
+    var s=document.createElement("div");
+    s.style.fontSize=".85rem"; s.style.fontWeight="700"; s.style.marginTop="3px"; s.textContent=f.sub;
+    b.appendChild(t); b.appendChild(s);
+    b.onclick=function(){ KL.f=i; KL.step=0; runKlartext(); };
+    host.appendChild(b);
+  });
+  show("screen-klartext");
+}
+function klStopTimer(){
+  if(KL.timer){ clearInterval(KL.timer); KL.timer=null; }
+  var t=$("klTime"); if(t){ t.className="timer hide"; }
+}
+function klStartTimer(sec,btn){
+  klStopTimer();
+  var t=$("klTime"), end=Date.now()+sec*1000;
+  t.className="timer"; t.textContent=fmt(sec);
+  if(btn) btn.textContent="Zeit neu starten";
+  KL.timer=setInterval(function(){
+    var left=Math.round((end-Date.now())/1000);
+    if(left<=0){
+      klStopTimer(); t.className="timer done"; t.textContent="Zeit um";
+      tone(660,260); buzz([120,80,120]); return;
+    }
+    t.textContent=fmt(left);
+    t.className="timer"+(left<=5?" low":"");
+  },200);
+}
+function runKlartext(){
+  klStopTimer();
+  var f=KLARTEXT[KL.f], s=f.steps[KL.step];
+  $("klPick").classList.add("hide");
+  $("klRun").classList.remove("hide");
+  $("klTitle").textContent=f.title;
+  $("klCount").textContent="Schritt "+(KL.step+1)+" von "+f.steps.length+(s.rolle?" · "+s.rolle:"");
+  $("klText").textContent=s.t;
+  var a=$("klActions"); a.innerHTML="";
+  if(s.sec){
+    var b=document.createElement("button");
+    b.className="btn btn--cyan"; b.textContent="Zeit starten ("+fmt(s.sec)+")";
+    b.onclick=function(){ klStartTimer(s.sec,b); };
+    a.appendChild(b);
+  }
+  var n=document.createElement("button");
+  n.className="btn btn--go";
+  n.textContent = (KL.step===f.steps.length-1) ? "Fertig" : "Weiter";
+  n.onclick=function(){
+    if(KL.step<f.steps.length-1){ KL.step++; runKlartext(); }
+    else { klStopTimer(); tone(760,140); setTimeout(function(){ tone(980,180); },150); openKlartext(); }
+  };
+  a.appendChild(n);
+  var z=document.createElement("button");
+  z.className="btn btn--skip";
+  z.textContent = KL.step===0 ? "Abbrechen" : "Ein Schritt zurück";
+  z.onclick=function(){ if(KL.step>0){ KL.step--; runKlartext(); } else openKlartext(); };
+  a.appendChild(z);
+  var c=$("klCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+}
+$("klHome").onclick=function(){ klStopTimer(); renderStart(); show("screen-start"); };
+
+/* ==================== 36 FRAGEN ==================== */
+var F3={ stufe:0, idx:0, phase:"intro" };
+function open36(){
+  F3={ stufe:0, idx:0, phase:"intro" };
+  run36(); show("screen-f36");
+}
+function run36(){
+  var st=F36[F3.stufe];
+  var c=$("f36Card"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+  var a=$("f36Actions"); a.innerHTML="";
+  function add(label,cls,fn){
+    var b=document.createElement("button"); b.className="btn "+cls; b.textContent=label; b.onclick=fn;
+    a.appendChild(b);
+  }
+  if(F3.phase==="intro"){
+    $("f36Stufe").textContent=st.stufe;
+    $("f36Count").textContent="";
+    $("f36Text").textContent=st.intro;
+    add("Los","btn--go",function(){ F3.phase="frage"; F3.idx=0; run36(); });
+    add("Zurück zum Start","btn--small",function(){ renderStart(); show("screen-start"); });
+    return;
+  }
+  if(F3.phase==="ende"){
+    $("f36Stufe").textContent="Durch";
+    $("f36Count").textContent="36 von 36";
+    $("f36Text").textContent="Das waren alle. Bleibt noch einen Moment sitzen, bevor ihr aufsteht.";
+    add("Von vorn","btn--cyan",function(){ open36(); });
+    add("Zurück zum Start","btn--small",function(){ renderStart(); show("screen-start"); });
+    return;
+  }
+  $("f36Stufe").textContent=st.stufe;
+  $("f36Count").textContent="Frage "+(F3.stufe*12+F3.idx+1)+" von 36";
+  $("f36Text").textContent=st.fragen[F3.idx];
+  add("Nächste Frage","btn--go",function(){
+    if(F3.idx < st.fragen.length-1){ F3.idx++; run36(); return; }
+    if(F3.stufe < F36.length-1){ F3.stufe++; F3.phase="intro"; run36(); return; }
+    F3.phase="ende"; run36();
+  });
+  add("Eine zurück","btn--skip",function(){
+    if(F3.idx>0){ F3.idx--; run36(); }
+    else if(F3.stufe>0){ F3.stufe--; F3.idx=11; run36(); }
+  });
+  add("Pause machen","btn--small",function(){ renderStart(); show("screen-start"); });
+}
+
+/* ==================== WIR-LISTE ==================== */
+function openZiele(){ renderZiele(); show("screen-ziele"); }
+function renderZiele(){
+  var host=$("zielList"); host.innerHTML="";
+  if(!S.ziele.length){
+    var p=document.createElement("p"); p.className="hint";
+    p.textContent="Noch nichts drauf. Schreib was rein oder nimm einen Vorschlag.";
+    host.appendChild(p);
+  }
+  S.ziele.forEach(function(z,i){
+    var row=document.createElement("div"); row.className="myitem";
+    var ck=document.createElement("button");
+    ck.className="del"; ck.style.background = z.d ? "var(--mint)" : "var(--card)";
+    ck.style.color = z.d ? "#0B1A14" : "var(--card-ink)";
+    ck.textContent = z.d ? "✓" : "";
+    ck.setAttribute("aria-label","Abhaken");
+    ck.onclick=function(){ z.d=!z.d; save(); renderZiele(); if(z.d) goodSound(); };
+    var s=document.createElement("span");
+    s.textContent=z.t;
+    if(z.d){ s.style.textDecoration="line-through"; s.style.opacity=".65"; }
+    var d=document.createElement("button");
+    d.className="del"; d.textContent="✕"; d.setAttribute("aria-label","Löschen");
+    d.onclick=function(){ S.ziele.splice(i,1); save(); renderZiele(); };
+    row.appendChild(ck); row.appendChild(s); row.appendChild(d);
+    host.appendChild(row);
+  });
+  var done=S.ziele.filter(function(z){ return z.d; }).length;
+  $("zielProgress").textContent = S.ziele.length
+    ? done+" von "+S.ziele.length+" erledigt."
+    : "";
+  var vs=$("zielVorschlaege"); vs.innerHTML="";
+  ZIELE_VORSCHLAEGE.forEach(function(t){
+    var drin=false;
+    S.ziele.forEach(function(z){ if(z.t===t) drin=true; });
+    if(drin) return;
+    var b=document.createElement("button");
+    b.type="button"; b.className="chip"; b.textContent=t;
+    b.onclick=function(){ S.ziele.push({t:t,d:false}); save(); renderZiele(); tone(760,110); };
+    vs.appendChild(b);
+  });
+}
+$("zielAdd").onclick=function(){
+  var v=$("zielInput").value.trim();
+  if(!v) return;
+  S.ziele.push({t:v,d:false}); $("zielInput").value=""; save(); renderZiele(); tone(760,120);
+};
+$("zielHome").onclick=function(){ renderStart(); show("screen-start"); };
 
 /* ==================== HOMESCREEN ==================== */
 try{
