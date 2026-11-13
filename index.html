@@ -93,6 +93,9 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:none}
 .t-red{--accent:var(--red)}
 .t-mint{--accent:var(--mint)}
 .t-yellow{--accent:var(--yellow)}
+.t-quiet{--accent:var(--ink)}
+.pinrow{display:flex;gap:10px}
+.pinrow input{text-align:center;letter-spacing:.4em;font-family:'Bungee',sans-serif;font-size:1.3rem}
 .hero{text-align:center;padding:10px 14px 26px}
 .hero h1{font-size:clamp(2.6rem,15vw,4.2rem);color:var(--yellow);
   text-shadow:4px 4px 0 var(--line),-2px -2px 0 var(--line),2px -2px 0 var(--line),-2px 2px 0 var(--line)}
@@ -128,6 +131,12 @@ textarea{font-size:.8rem;font-weight:600;min-height:90px}
 .badge.m-team{background:var(--mint);color:#0B1A14}
 .badge.m-hot{background:var(--red);color:#fff}
 .badge.m-cyan{background:var(--cyan);color:#0A1620}
+.steps{margin:6px 0 0 0;padding-left:22px;display:grid;gap:7px}
+.steps li{font-size:.95rem;font-weight:700;line-height:1.35}
+.steps li::marker{font-family:'Bungee',sans-serif;font-size:.85rem}
+.infobox{border:3px solid var(--line);border-radius:12px;padding:9px 12px;background:var(--paper);color:var(--ink);
+  font-size:.88rem;font-weight:700;margin-top:4px}
+.infobox b{display:block;font-size:.72rem;opacity:.7;margin-bottom:2px}
 .dice{display:grid;gap:10px;margin-top:4px}
 .dicerow{border:3px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--paper);color:var(--ink)}
 .dicerow b{display:block;font-size:.72rem;font-weight:800;opacity:.7;margin-bottom:2px}
@@ -229,10 +238,8 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
       <button class="tile t-mint" id="advBtn"><b>Adventskalender</b><span>24 Türchen, eins pro Tag</span></button>
     </div>
 
-    <h2 class="sect t-red">Nur wir zwei</h2>
     <div class="tiles">
-      <button class="tile t-red" id="hotBtn"><b>Heiße Karten</b><span>Sechs Themen, drei Stufen, Würfel</span></button>
-      <button class="tile t-red" id="wuBtn"><b>Wunsch-Abgleich</b><span>Getrennt ankreuzen, nur Treffer zählen</span></button>
+      <button class="tile t-quiet wide" id="privatBtn"><b>Privat</b><span>Nur für euch beide</span></button>
     </div>
 
     <div class="panel" style="display:grid;gap:14px">
@@ -362,6 +369,82 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
     </div>
   </div>
 
+  <section id="screen-privat" class="hide">
+    <div id="privatLock" class="hide">
+      <div class="panel" style="display:grid;gap:12px">
+        <div class="display" style="font-size:1.5rem">Code eingeben</div>
+        <div class="pinrow">
+          <input type="password" inputmode="numeric" id="pinInput" maxlength="6" placeholder="····" autocomplete="off">
+          <button class="btn btn--go" id="pinOpen" style="width:auto;padding:14px 20px">Öffnen</button>
+        </div>
+        <p class="hint" id="pinMsg"></p>
+        <button class="btn btn--small" id="pinBack">Zurück zum Start</button>
+      </div>
+    </div>
+
+    <div id="privatHub" class="hide">
+      <div class="panel" style="display:grid;gap:10px">
+        <div class="display" style="font-size:1.6rem">Privat</div>
+        <p style="font-size:.92rem">Alles, was nur euch beide angeht.</p>
+      </div>
+      <div class="tiles" style="margin-top:16px">
+        <button class="tile t-red" id="hotBtn"><b>Heiße Karten</b><span>Sechs Themen, vier Stufen, Würfel</span></button>
+        <button class="tile t-red" id="stellBtn"><b>Stellungen</b><span>18 Anleitungen zum Nachmachen</span></button>
+        <button class="tile t-red" id="rolleBtn"><b>Rollenspiel</b><span>Acht Szenarien mit Ablauf</span></button>
+        <button class="tile t-red" id="wuBtn"><b>Wunsch-Abgleich</b><span>Getrennt ankreuzen, nur Treffer zählen</span></button>
+      </div>
+      <div class="row two" style="margin-top:14px">
+        <button class="btn btn--small" id="pinSet">Code</button>
+        <button class="btn btn--small" id="privatHome">Zurück zum Start</button>
+      </div>
+      <p class="hint" id="privatHint" style="text-align:center"></p>
+    </div>
+  </section>
+
+  <section id="screen-stellung" class="hide">
+    <div class="panel" style="display:grid;gap:10px">
+      <div class="display" style="font-size:1.6rem">Stellungen</div>
+      <p style="font-size:.92rem">18 Stellungen mit Anleitung. Schritt für Schritt nachmachen, nichts würfeln.</p>
+      <div class="chips" id="stellFilter"></div>
+    </div>
+    <div style="margin-top:16px">
+      <div class="card" id="stellCard">
+        <span class="badge m-hot" id="stellName">Stellung</span>
+        <div class="who" id="stellMeta"></div>
+        <ol class="steps" id="stellSteps"></ol>
+        <div class="infobox"><b>Gut für</b><span id="stellGut"></span></div>
+        <div class="infobox"><b>Tipp</b><span id="stellTipp"></span></div>
+      </div>
+      <div class="row two" style="margin-top:14px">
+        <button class="btn" id="stellPrev">Zurück</button>
+        <button class="btn btn--go" id="stellNext">Nächste</button>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn btn--skip" id="stellRandom">Zufällig aussuchen</button>
+        <button class="btn btn--small" id="stellHome">Zurück</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-rolle" class="hide">
+    <div id="rollePick">
+      <div class="panel" style="display:grid;gap:12px">
+        <div class="display" style="font-size:1.6rem">Rollenspiel</div>
+        <p style="font-size:.92rem">Acht Szenarien mit Ablauf: Vorbereitung, Rollen, Schritte. Ihr folgt der Anleitung, bis sie sich erübrigt.</p>
+        <div class="row" id="rolleList"></div>
+        <button class="btn btn--small" id="rolleHome">Zurück</button>
+      </div>
+    </div>
+    <div id="rolleRun" class="hide">
+      <div class="card" id="rolleCard">
+        <span class="badge m-hot" id="rolleTitel">Szenario</span>
+        <div class="who" id="rolleStufe"></div>
+        <div class="q small" id="rolleText"></div>
+      </div>
+      <div class="row" id="rolleActions" style="margin-top:14px"></div>
+    </div>
+  </section>
+
   <section id="screen-hot" class="hide">
     <div class="panel" style="display:grid;gap:12px">
       <div class="display" style="font-size:1.6rem">Nur wir zwei</div>
@@ -425,7 +508,7 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
       </div>
     </div>
 
-    <button class="btn btn--small" id="hotHome" style="margin-top:14px">Zurück zum Start</button>
+    <button class="btn btn--small" id="hotHome" style="margin-top:14px">Zurück</button>
   </section>
 
   <section id="screen-wunsch" class="hide">
@@ -438,7 +521,7 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
         <button class="btn btn--go hide" id="wuResultBtn">Ergebnis ansehen</button>
         <div class="row two">
           <button class="btn btn--small" id="wuReset">Alles löschen</button>
-          <button class="btn btn--small" id="wuHome">Zurück zum Start</button>
+          <button class="btn btn--small" id="wuHome">Zurück</button>
         </div>
       </div>
     </div>
@@ -448,7 +531,7 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
         <div class="mylist" id="wuLists"></div>
         <div class="row two">
           <button class="btn btn--small" id="wuBackIntro" onclick="openWunsch()">Zurück</button>
-          <button class="btn btn--small" onclick="renderStart();show('screen-start')">Zum Start</button>
+          <button class="btn btn--small" onclick="zeigePrivatHub()">Übersicht</button>
         </div>
       </div>
     </div>
@@ -1720,6 +1803,26 @@ var WUNSCH=[
   {g:"Mehr",t:"Direkt nach dem Aufwachen"},
   {g:"Mehr",t:"Über eine Fantasie zu dritt reden, ohne sie umzusetzen"},
   {g:"Mehr",t:"Video oder Fotos, die nur bei uns bleiben"},
+  {g:"Hart",t:"Komplett gefesselt werden"},
+  {g:"Hart",t:"Augenbinde plus Ohrstöpsel"},
+  {g:"Hart",t:"Knebel"},
+  {g:"Hart",t:"Nippelklemmen"},
+  {g:"Hart",t:"Paddle, Gürtel oder Gerte"},
+  {g:"Hart",t:"Hart an den Haaren gezogen werden"},
+  {g:"Hart",t:"Erniedrigende Ansprache"},
+  {g:"Hart",t:"Orgasmuskontrolle über mehrere Tage"},
+  {g:"Hart",t:"Keuschheitskäfig"},
+  {g:"Hart",t:"Wachs"},
+  {g:"Hart",t:"Doppeldildo"},
+  {g:"Hart",t:"Faustspiel als Ziel"},
+  {g:"Hart",t:"Spucken"},
+  {g:"Hart",t:"Pissen, unter der Dusche"},
+  {g:"Hart",t:"Ins Gesicht kommen"},
+  {g:"Hart",t:"Leder, Harness oder Gear"},
+  {g:"Hart",t:"Puppy Play oder anderes Rollenspiel"},
+  {g:"Hart",t:"Einen Sexclub oder Darkroom besuchen"},
+  {g:"Hart",t:"Einen Dritten wirklich dazuholen"},
+  {g:"Hart",t:"Ein Video drehen, das bei uns bleibt"},
   {g:"Reden",t:"Ein festes Wort, mit dem sofort Schluss ist"}
 ];
 
@@ -1839,7 +1942,8 @@ var HOT_THEMEN=[
 var HOT_STUFEN=[
   {id:"warm",  label:"Anwärmen"},
   {id:"heiss", label:"Heiß"},
-  {id:"direkt",label:"Sehr direkt"}
+  {id:"direkt",label:"Sehr direkt"},
+  {id:"hart",  label:"Hardcore"}
 ];
 
 var HOTCARDS=[
@@ -1913,7 +2017,36 @@ var HOTCARDS=[
   {g:"toys",s:"heiss",k:"Spiel",  t:"Er benutzt das Toy an sich selbst, du schaust nur zu."},
   {g:"toys",s:"direkt",k:"Aufgabe",t:"Dildo statt Hand. Er bestimmt das Tempo, du die Tiefe."},
   {g:"toys",s:"direkt",k:"Aufgabe",t:"Prostata-Vibrator, und er darf sich dabei nicht selbst anfassen."},
-  {g:"toys",s:"direkt",k:"Spiel",  t:"Zwei Toys, eins für jeden, gleichzeitig. Wer hält länger durch?"}
+  {g:"toys",s:"direkt",k:"Spiel",  t:"Zwei Toys, eins für jeden, gleichzeitig. Wer hält länger durch?"},
+  /* ---------- HARDCORE ---------- */
+  {g:"vorspiel",s:"hart",k:"Spiel",  t:"Er zieht dich aus. Du hilfst nicht mit und wehrst dich nicht."},
+  {g:"vorspiel",s:"hart",k:"Spiel",  t:"Eine Stunde lang nur über dich ergehen lassen. Du gibst nichts zurück."},
+  {g:"vorspiel",s:"hart",k:"Spiel",  t:"Du kniest. Er entscheidet, wann du aufstehen darfst."},
+  {g:"vorspiel",s:"hart",k:"Aufgabe",t:"Er bindet dir die Hände auf den Rücken und macht dann in Ruhe weiter."},
+  {g:"oral",s:"hart",k:"Spiel",  t:"Er hält dich an den Haaren und gibt das Tempo vor, bis du abklopfst."},
+  {g:"oral",s:"hart",k:"Spiel",  t:"Auf Kommando: Er sagt an, wann schneller, wann tiefer, wann Pause."},
+  {g:"oral",s:"hart",k:"Spiel",  t:"Du bleibst unten, bis er fertig ist. Hände bleiben auf dem Rücken."},
+  {g:"oral",s:"hart",k:"Spiel",  t:"Er darf dir ins Gesicht kommen, wenn ihr das vorher geklärt habt. Augen zu."},
+  {g:"anal",s:"hart",k:"Aufgabe",t:"Lange und gründlich vorbereiten — und dann ohne Pause durchziehen."},
+  {g:"anal",s:"hart",k:"Aufgabe",t:"Doppelt: Dildo und er. Langsam, sehr viel Gel, sofort Stopp bei Widerstand."},
+  {g:"anal",s:"hart",k:"Aufgabe",t:"Melken: nur Prostata, bis es ohne Hand passiert."},
+  {g:"anal",s:"hart",k:"Aufgabe",t:"Plug den ganzen Abend, Größe in drei Schritten steigern."},
+  {g:"anal",s:"hart",k:"Aufgabe",t:"Faustspiel als Ziel, heute nur bis drei Finger. Handschuh, Berge von Gel, Schluss bei jedem Widerstand."},
+  {g:"anal",s:"hart",k:"Spiel",  t:"Er nimmt dich in drei Stellungen hintereinander, du sagst keine davon an."},
+  {g:"spiel",s:"hart",k:"Spiel",  t:"Komplett gefesselt, Augen verbunden, zwanzig Minuten. Er sagt kein Wort."},
+  {g:"spiel",s:"hart",k:"Spiel",  t:"Du gehorchst zwei Stunden ohne Diskussion. Das Stop-Wort gilt trotzdem jede Sekunde."},
+  {g:"spiel",s:"hart",k:"Aufgabe",t:"Nippelklemmen, höchstens zehn Minuten. Er bestimmt, wann sie abgehen."},
+  {g:"spiel",s:"hart",k:"Aufgabe",t:"Zwanzig Schläge mit Hand, Paddle oder Gürtel, Stärke steigend. Laut mitzählen."},
+  {g:"spiel",s:"hart",k:"Aufgabe",t:"Wachs aus dreißig Zentimetern Abstand, nur Rücken und Brust."},
+  {g:"spiel",s:"hart",k:"Spiel",  t:"Orgasmuskontrolle: Er entscheidet eine Woche lang, wann du darfst."},
+  {g:"spiel",s:"hart",k:"Spiel",  t:"Käfig für einen Abend. Den Schlüssel hat er."},
+  {g:"spiel",s:"hart",k:"Spiel",  t:"Derbe Ansprache, aber nur mit den Worten, die ihr vorher abgesprochen habt."},
+  {g:"spiel",s:"hart",k:"Spiel",  t:"Unter der Dusche: Pissen, wenn ihr das wollt. Vorher abmachen, wohin."},
+  {g:"spiel",s:"hart",k:"Spiel",  t:"Augenbinde plus Ohrstöpsel, dreißig Minuten. Er berührt dich unangekündigt."},
+  {g:"toys",s:"hart",k:"Aufgabe",t:"Großes Toy, aber in drei Größen gesteigert, nicht auf einmal."},
+  {g:"toys",s:"hart",k:"Spiel",  t:"Doppeldildo, beide gleichzeitig, gleiches Tempo."},
+  {g:"toys",s:"hart",k:"Spiel",  t:"Vibrator festgeschnallt. Er stellt die Stufe ein, du darfst nicht ran."},
+  {g:"toys",s:"hart",k:"Spiel",  t:"Er benutzt drei Toys hintereinander, du siehst nicht, welches dran ist."}
 ];
 
 var HOTWISSEN=[
@@ -1932,7 +2065,17 @@ var HOTWISSEN=[
   "Poppers und Potenzmittel zusammen können den Blutdruck gefährlich absacken lassen.",
   "Bei Fesseln oder Augenbinde vorher ein Stop-Wort ausmachen, an das sich beide halten.",
   "Vor Analsex besser nicht schwer essen.",
-  "Hämorrhoiden machen Schmerzen und Blutungen wahrscheinlicher. Dann langsamer und mit mehr Gel."
+  "Hämorrhoiden machen Schmerzen und Blutungen wahrscheinlicher. Dann langsamer und mit mehr Gel.",
+  "Würgen und Atemkontrolle sind hier bewusst nicht dabei. Dabei liegen Minuten zwischen Spaß und Herzstillstand, und es gibt keine sichere Variante.",
+  "Fesseln nie am Hals. Zwei Finger müssen unter die Fessel passen, eine Schere liegt griffbereit, Hände und Füße regelmäßig auf Kribbeln und Farbe prüfen.",
+  "Schläge nur auf Po und Oberschenkel. Nieren, Wirbelsäule und Steißbein bleiben tabu.",
+  "Nippelklemmen höchstens zehn bis fünfzehn Minuten. Beim Abnehmen tut es mehr weh als beim Anlegen.",
+  "Wachs nur mit Kerzen, die fürs Spiel gemacht sind, nie mit Haushaltskerzen. Aus Abstand tropfen, nichts über Gesicht, Augen oder Genitalien.",
+  "Faustspiel braucht kurze Nägel, Handschuhe, sehr viel Gel und viel Zeit. Jeder Widerstand heißt Stopp, Blut heißt Schluss für heute.",
+  "Käfig und Orgasmuskontrolle: täglich rausnehmen, waschen, auf Druckstellen achten. Bei Taubheit oder Verfärbung sofort ab.",
+  "Alles Harte vorher nüchtern besprechen, nicht mittendrin. Poppers und Alkohol verschieben die eigene Grenze.",
+  "Neben dem Stop-Wort noch ein Zeichen ausmachen für den Fall, dass der Mund nicht frei ist: zweimal klopfen oder etwas fallen lassen.",
+  "Nach harten Sachen gehört Aftercare dazu: Decke, Wasser, zehn Minuten nebeneinander liegen und reden. Nicht optional."
 ];
 
 var WUERFEL={
@@ -1968,6 +2111,264 @@ var ABENDPLAN={
         "Der, der mehr gemacht hat, wird jetzt verwöhnt."]
 };
 
+
+/* ==================== STELLUNGEN ==================== */
+var STELLUNGEN=[
+  {n:"Löffelchen", g:"anal", l:"ruhig",
+   s:["Legt euch beide auf die Seite, er hinter dir, Knie leicht angezogen.",
+      "Er schiebt ein Kissen zwischen eure Knie und ein flaches unter deinen Kopf.",
+      "Gel aufs Toy oder auf ihn und auf dich, dann ganz langsam rein, ohne Druck.",
+      "Bewegung kommt aus der Hüfte, kleine Stöße statt großer."],
+   gut:"Lange, ruhige Nummern. Beide Hände sind frei, einer kann dich dabei vorne anfassen.",
+   tipp:"Wenn du den Oberschenkel leicht nach vorn ziehst, wird der Winkel flacher und angenehmer."},
+
+  {n:"Auf dem Rücken, Kissen unter dem Becken", g:"anal", l:"ruhig",
+   s:["Du liegst auf dem Rücken, ein festes Kissen kommt unter dein Becken.",
+      "Zieh die Knie an, Füße auf dem Bett oder an seinen Hüften.",
+      "Er kniet davor, geht langsam rein und bleibt erstmal still.",
+      "Erst wenn du es sagst, fängt er an sich zu bewegen."],
+   gut:"Augenkontakt, und der Winkel trifft die Prostata fast von selbst.",
+   tipp:"Je höher das Kissen, desto steiler der Winkel. Zu hoch wird schnell zu viel."},
+
+  {n:"Beine auf seinen Schultern", g:"anal", l:"fordernd",
+   s:["Aus der Rückenlage legst du beide Beine auf seine Schultern.",
+      "Er stützt sich neben deinem Kopf ab und kommt näher ran.",
+      "Tempo bleibt niedrig, die Position geht sehr tief.",
+      "Bei Ziehen im Rücken: ein Bein runter, das entlastet sofort."],
+   gut:"Tiefe und Druck. Nichts für den Anfang eines Abends.",
+   tipp:"Beweglichkeit vorher testen — wenn die Oberschenkel brennen, ist die Nummer vorbei."},
+
+  {n:"Von hinten, auf allen vieren", g:"anal", l:"fordernd",
+   s:["Du gehst auf Hände und Knie, Knie etwa hüftbreit auseinander.",
+      "Er kniet hinter dir, eine Hand an deiner Hüfte.",
+      "Langsam anfangen, erst dann Tempo.",
+      "Geh mit dem Oberkörper tiefer, wenn der Winkel besser werden soll."],
+   gut:"Tempo und Tiefe. Er hat die Kontrolle, du kannst mit der Hüfte gegenhalten.",
+   tipp:"Unterarme statt Hände abstützen schont die Handgelenke bei langen Nummern."},
+
+  {n:"Du reitest ihn", g:"anal", l:"mittel",
+   s:["Er liegt auf dem Rücken, du kniest über ihm.",
+      "Du führst ihn selbst ein und gehst nur so tief, wie du willst.",
+      "Tempo und Tiefe gehören komplett dir, er bleibt liegen.",
+      "Füße flach aufstellen statt knien, wenn die Oberschenkel müde werden."],
+   gut:"Du steuerst alles. Die beste Position, wenn du länger brauchst, um dich zu öffnen.",
+   tipp:"Leicht nach vorn lehnen ändert den Winkel, nach hinten lehnen den Druck."},
+
+  {n:"Reiten mit dem Rücken zu ihm", g:"anal", l:"fordernd",
+   s:["Er liegt, du setzt dich mit dem Rücken zu ihm über ihn.",
+      "Stütz dich an seinen Oberschenkeln oder am Fußende ab.",
+      "Kleine Bewegungen reichen, der Winkel ist von sich aus intensiv.",
+      "Er kann die Hüften mitnehmen, wenn du stillhältst."],
+   gut:"Anderer Winkel als alles andere, und er hat freie Sicht.",
+   tipp:"Anstrengend für die Oberschenkel — plant das als Zwischenposition ein."},
+
+  {n:"Stehend von hinten", g:"anal", l:"fordernd",
+   s:["Stütz dich an Wand, Kommode oder Bettkante ab, Beine leicht gegrätscht.",
+      "Höhenunterschied ausgleichen: Buch unter die Füße oder in die Knie gehen.",
+      "Er hält dich an der Hüfte, Oberkörper kommt leicht nach vorn.",
+      "Für mehr Halt greift er dir an die Schulter."],
+   gut:"Schnell, spontan, zwischendurch. Funktioniert in der Dusche.",
+   tipp:"In der Dusche Wasser weg vom Gel halten — Wasser spült es weg, Silikongel hält länger."},
+
+  {n:"Sitzend, Gesicht zu Gesicht", g:"anal", l:"ruhig",
+   s:["Er sitzt auf Stuhl oder Bettkante, Füße fest auf dem Boden.",
+      "Du setzt dich mit gespreizten Beinen auf ihn, Arme um seinen Nacken.",
+      "Gleicher Rhythmus, kleine Bewegungen, viel Körperkontakt.",
+      "Er kann dich hochdrücken, du lässt dich wieder sinken."],
+   gut:"Nähe, Küssen währenddessen, langsame Abende.",
+   tipp:"Ein stabiler Stuhl ohne Lehne ist besser als das Sofa."},
+
+  {n:"Seitlich, Beine verschränkt", g:"anal", l:"mittel",
+   s:["Du liegst auf der Seite, er kommt im rechten Winkel von hinten-unten dazu.",
+      "Dein oberes Bein liegt über seiner Hüfte, seine Beine verschränkt mit deinen.",
+      "Kleine, gleichmäßige Bewegungen, viel Gel.",
+      "Wechselt die Seite, wenn eine Schulter einschläft."],
+   gut:"Flacher Winkel, sehr lange durchhaltbar.",
+   tipp:"Gut geeignet, wenn einer von euch Rücken hat."},
+
+  {n:"Flach auf dem Bauch", g:"anal", l:"fordernd",
+   s:["Du legst dich flach auf den Bauch, ein Kissen unter die Hüfte.",
+      "Beine leicht auseinander, er legt sich auf dich.",
+      "Er bewegt sich nur aus der Hüfte, der Spielraum ist klein.",
+      "Dreh den Kopf zur Seite und sag, wenn es zu eng wird."],
+   gut:"Fühlt sich enger an als alles andere. Sehr intensiv für beide.",
+   tipp:"Weil du dich kaum bewegen kannst: Abmachen, wie du bremst, bevor es losgeht."},
+
+  {n:"Kniend vor ihm", g:"oral", l:"ruhig",
+   s:["Er sitzt oder steht, du kniest davor, am besten auf einem Kissen.",
+      "Eine Hand am Ansatz, die andere an seinem Oberschenkel.",
+      "Erst Lippen und Zunge, Hand kommt später dazu.",
+      "Mund und Hand im selben Takt bewegen."],
+   gut:"Der Klassiker. Augenkontakt funktioniert hier am besten.",
+   tipp:"Kissen unter die Knie, sonst ist nach fünf Minuten Schluss."},
+
+  {n:"Er steht über dir", g:"oral", l:"mittel",
+   s:["Du liegst auf dem Rücken quer auf dem Bett, er kniet über deinem Gesicht.",
+      "Er stützt sich an der Wand oder am Kopfteil ab.",
+      "Er kontrolliert die Tiefe, du die Geschwindigkeit mit der Hand an seiner Hüfte.",
+      "Zeichen zum Abbrechen vorher ausmachen: zweimal auf den Oberschenkel klopfen."],
+   gut:"Er hat die Kontrolle, du liegst bequem.",
+   tipp:"Eine Hand bleibt immer an seiner Hüfte — so kannst du jederzeit bremsen."},
+
+  {n:"69 auf der Seite", g:"oral", l:"ruhig",
+   s:["Legt euch seitlich gegengleich hin, Kopf auf dem Oberschenkel des anderen.",
+      "Unteres Bein ausstrecken, oberes anwinkeln.",
+      "Beide gleichzeitig, aber ohne Wettbewerb.",
+      "Wenn es zu viel wird: einer pausiert und schaut zu."],
+   gut:"Bequemer als 69 übereinander, geht deutlich länger.",
+   tipp:"Übereinander drückt der Obere immer, seitlich hat keiner Gewicht auf sich."},
+
+  {n:"Kopf über die Bettkante", g:"oral", l:"fordernd",
+   s:["Du legst dich auf den Rücken, Kopf hängt über die Bettkante.",
+      "Er steht davor, Hals und Rachen liegen jetzt auf einer Linie.",
+      "Ganz langsam anfangen, jede Bewegung angekündigt.",
+      "Nach ein paar Minuten Pause machen, Nacken wird schnell steif."],
+   gut:"Für tiefes Blasen die einfachste Haltung.",
+   tipp:"Klopfzeichen ist hier Pflicht, reden geht nicht. Und: keine Fesseln dabei."},
+
+  {n:"Rimming, Oberkörper tief", g:"oral", l:"mittel",
+   s:["Du gehst auf die Knie, Oberkörper runter, Kopf auf die Arme.",
+      "Er kniet dahinter, Hände an deinen Pobacken.",
+      "Erst außen herum, Zunge flach, dann punktueller.",
+      "Danach kann er mit Gel und einem Finger weitermachen."],
+   gut:"Beste Position für Rimming, gleichzeitig entspannt es den Schließmuskel.",
+   tipp:"Vorher duschen reicht, Spülen muss nicht sein."},
+
+  {n:"Rimming auf dem Rücken", g:"oral", l:"mittel",
+   s:["Du liegst auf dem Rücken, Beine angezogen oder auf seinen Schultern.",
+      "Kissen unters Becken, damit der Winkel stimmt.",
+      "Er liegt davor und hat beide Hände frei.",
+      "Von hier aus geht der Übergang zu Fingern oder mehr fließend."],
+   gut:"Augenkontakt dabei, und er kann dich gleichzeitig vorne anfassen.",
+   tipp:"Bequemer als die Variante auf den Knien, wenn es länger dauern soll."},
+
+  {n:"Nebeneinander, Hand gegen Hand", g:"hand", l:"ruhig",
+   s:["Legt euch nebeneinander, jeder auf der Seite, zugewandt.",
+      "Jeder nimmt den anderen in die Hand, gleicher Rhythmus.",
+      "Wer schneller wird, gibt das Tempo für beide vor.",
+      "Letzte Minute: Augen zu und nur noch zuhören."],
+   gut:"Wenn ihr müde seid, aber nicht ohne wollt.",
+   tipp:"Ein Tropfen Gel macht aus der Nummer etwas völlig anderes."},
+
+  {n:"Quer daneben sitzen", g:"hand", l:"mittel",
+   s:["Er liegt auf dem Rücken, du sitzt quer neben seiner Hüfte.",
+      "Eine Hand an ihm, die andere auf seiner Brust oder am Hals, ohne Druck.",
+      "Du siehst sein Gesicht und kannst exakt steuern, wann du aufhörst.",
+      "Dreimal kurz davor stoppen, beim vierten Mal durchlassen."],
+   gut:"Die Position für Edging. Volle Kontrolle, nichts ist im Weg.",
+   tipp:"Lass dir von ihm ansagen, wie kurz davor er ist — nicht raten."}
+];
+var STELL_FILTER=[
+  {id:"alle",label:"Alle"},{id:"anal",label:"Anal"},{id:"oral",label:"Oral"},{id:"hand",label:"Hand"}
+];
+
+/* ==================== ROLLENSPIEL ==================== */
+var ROLLEN=[
+  {titel:"Zwei Fremde in einer Bar", dauer:"ca. 45 Minuten",
+   vorb:"Küche oder Wohnzimmer wird zur Bar. Zwei Gläser, Musik im Hintergrund, Licht runter. Ihr geht getrennt rein und kennt euch nicht.",
+   rollenText:"Einer sitzt und trinkt, der andere kommt später dazu.",
+   schritte:[
+     "Der Erste sitzt an der Theke und tut, als wäre er allein. Nicht umdrehen, wenn der andere reinkommt.",
+     "Der Zweite kommt rein, setzt sich zwei Plätze weiter und spricht als Erstes über etwas völlig Belangloses. Wetter, Musik, der Laden.",
+     "Zehn Minuten Smalltalk, ohne euch anzufassen. Erfindet euch Namen und Berufe und bleibt dabei.",
+     "Einer rückt einen Platz näher. Ab jetzt darf geflirtet werden, aber immer noch in den Rollen.",
+     "Einer von euch fragt, ob der andere mit zu ihm kommt. Wer fragt, ist vorher nicht abgesprochen.",
+     "Geht gemeinsam ins Schlafzimmer — und bleibt in den Rollen, bis es von selbst aufhört."
+   ],
+   ende:"Danach: Rollen fallen lassen, zehn Minuten liegen bleiben und erzählen, was am besten funktioniert hat."},
+
+  {titel:"Massagetermin", dauer:"ca. 40 Minuten",
+   vorb:"Handtuch aufs Bett, Massageöl oder Gel bereitstellen, warmes Licht. Einer ist Kunde, einer Masseur. Termin dauert laut Absprache 30 Minuten.",
+   rollenText:"Der Masseur duzt nicht, der Kunde bleibt höflich.",
+   schritte:[
+     "Der Kunde klopft an, der Masseur bittet rein und erklärt kurz den Ablauf.",
+     "Der Kunde zieht sich aus und legt sich bäuchlings hin, Handtuch über den Po.",
+     "Zehn Minuten echte Massage: Rücken, Schultern, Nacken. Keine Abkürzung.",
+     "Der Masseur fragt, ob er auch die Oberschenkel machen soll. Der Kunde entscheidet.",
+     "Der Masseur arbeitet sich langsam weiter nach oben. Beide bleiben beim Sie.",
+     "Der Kunde dreht sich um. Ab hier läuft es ohne Skript."
+   ],
+   ende:"Der Masseur verabschiedet den Kunden förmlich. Dann erst aus den Rollen raus."},
+
+  {titel:"Der Handwerker", dauer:"ca. 30 Minuten",
+   vorb:"Einer zieht Arbeitsklamotten an, der andere was Bequemes von zu Hause. Irgendwas ist angeblich kaputt — Heizung, Abfluss, egal.",
+   rollenText:"Der Handwerker hat wenig Zeit, der Bewohner hat den ganzen Tag nichts vor.",
+   schritte:[
+     "Es klingelt. Der Bewohner macht auf und erklärt das Problem, ausführlich und umständlich.",
+     "Der Handwerker schaut sich die Sache wirklich an und redet dabei über die Arbeit.",
+     "Der Bewohner bietet was zu trinken an und bleibt dabei stehen, viel zu nah.",
+     "Der Handwerker fragt, ob er mit anfassen kann — gemeint ist die Reparatur.",
+     "Einer von euch macht eine Bemerkung, die eindeutig ist. Der andere steigt drauf ein.",
+     "Ab hier wird nichts mehr repariert."
+   ],
+   ende:"Zum Schluss stellt der Handwerker eine Rechnung in Aussicht. Dann aus den Rollen raus."},
+
+  {titel:"Personal Trainer", dauer:"ca. 35 Minuten",
+   vorb:"Sportsachen anziehen, Platz im Wohnzimmer schaffen, Handtuch und Wasser bereit. Einer trainiert, einer wird trainiert.",
+   rollenText:"Der Trainer ist streng und korrigiert Haltung mit den Händen.",
+   schritte:[
+     "Aufwärmen: Der Trainer zählt an, zwei Minuten, richtig machen.",
+     "Drei Übungen, je zehn Wiederholungen. Der Trainer korrigiert die Haltung — mit Anfassen.",
+     "Der Trainer lobt oder kritisiert, je nachdem. Der Trainierte widerspricht nicht.",
+     "Dehnen: Der Trainer drückt dabei mit, näher als nötig.",
+     "Der Trainer bietet eine Massage zum Abschluss an.",
+     "Ab hier wird nicht mehr trainiert."
+   ],
+   ende:"Danach wirklich trinken und kurz durchatmen — ihr habt euch bewegt."},
+
+  {titel:"Herr und Diener", dauer:"ein ganzer Abend",
+   vorb:"Vorher festlegen: wer führt, wer folgt, Stop-Wort und was heute nicht geht. Der Dienende zieht an, was der Herr sagt.",
+   rollenText:"Keine Diskussionen, keine Ironie. Das Stop-Wort gilt jede Sekunde.",
+   schritte:[
+     "Der Dienende macht dem Herrn etwas zu trinken und reicht es ihm kniend.",
+     "Der Herr gibt drei einfache Aufgaben: etwas holen, etwas aufräumen, etwas richten. Alles wird wortlos gemacht.",
+     "Der Herr prüft die Arbeit und lobt oder schickt zurück.",
+     "Der Dienende zieht den Herrn aus, langsam, ohne dass er gefragt hat.",
+     "Der Herr bestimmt die nächste halbe Stunde komplett. Der Dienende sagt nur Ja oder das Stop-Wort.",
+     "Der Herr entscheidet, wann Schluss ist."
+   ],
+   ende:"Aftercare gehört dazu: Decke, Wasser, zehn Minuten nebeneinander, normal miteinander reden."},
+
+  {titel:"Hotelzimmer, falsche Tür", dauer:"ca. 30 Minuten",
+   vorb:"Einer ist schon im Zimmer, am besten frisch geduscht mit Handtuch. Der andere wartet draußen vor der Schlafzimmertür.",
+   rollenText:"Zwei Gäste, zwei Zimmer, eine Verwechslung an der Rezeption.",
+   schritte:[
+     "Es klopft. Der Gast im Zimmer öffnet im Handtuch.",
+     "Der andere behauptet, das sei sein Zimmer, und hat sogar einen Schlüssel dafür.",
+     "Beide diskutieren, wer hier falsch ist. Keiner gibt nach.",
+     "Einer schlägt vor, es sich so lange gemütlich zu machen, bis die Rezeption das klärt.",
+     "Die Rezeption meldet sich nicht mehr.",
+     "Ab hier interessiert das Zimmer keinen mehr."
+   ],
+   ende:"Danach entscheidet ihr, wer am nächsten Morgen auscheckt."},
+
+  {titel:"Fotoshooting", dauer:"ca. 40 Minuten",
+   vorb:"Handy als Kamera, Stuhl, eine Lampe, ein paar Klamotten zum Wechseln. Einer fotografiert, einer steht Modell. Bilder bleiben bei euch.",
+   rollenText:"Der Fotograf gibt Anweisungen, das Modell führt sie aus.",
+   schritte:[
+     "Erste Serie: angezogen, nur Gesicht und Oberkörper. Fünf Bilder.",
+     "Der Fotograf korrigiert die Haltung mit den Händen statt mit Worten.",
+     "Zweite Serie: Hemd auf, anderes Licht, näher ran.",
+     "Der Fotograf sagt, was ihm gefällt. Konkret, nicht höflich.",
+     "Dritte Serie: Das Modell entscheidet, wie weit es geht.",
+     "Irgendwann legt der Fotograf die Kamera weg."
+   ],
+   ende:"Danach zusammen durchgehen, welche Bilder bleiben. Der Rest wird sofort gelöscht."},
+
+  {titel:"Nach langer Zeit wieder da", dauer:"ca. 35 Minuten",
+   vorb:"Einer war angeblich wochenlang weg. Koffer oder Tasche in den Flur, der andere wartet in der Wohnung.",
+   rollenText:"Ihr spielt euch selbst — nur eben nach vier Wochen Trennung.",
+   schritte:[
+     "Die Tür geht auf. Keine Begrüßung mit Worten, nur Blick.",
+     "Fünf Minuten nur umarmen, nichts sagen.",
+     "Jeder erzählt eine Sache, die er am anderen vermisst hat. Konkret, keine Floskeln.",
+     "Jeder erzählt eine Sache, die er körperlich vermisst hat — und holt sie sich.",
+     "Der Koffer bleibt stehen, wo er steht.",
+     "Ab hier gibt es keinen Plan mehr."
+   ],
+   ende:"Später auspacken. Oder morgen."}
+];
+
 var MODES = [
   {id:"quiz",  label:"Partner-Quiz"},
   {id:"either",label:"Entweder / Oder"},
@@ -1998,7 +2399,7 @@ var S = {
   modes:["quiz","either","dare","tod","who","blitz","draw","memory","team"],
   levels:["locker","nah"], pick:"self", goal:"p15", round:0,
   jokerOn:true, penalty:true, sound:true, joker:[1,1],
-  evening:{done:[],notes:[]}, advent:[], ziele:[], wunsch:{a:{0:{},1:{}},done:[false,false]},
+  evening:{done:[],notes:[]}, advent:[], ziele:[], pin:"", wunsch:{a:{0:{},1:{}},done:[false,false]},
   custom:{}, favs:[], stats:{games:0,rounds:0,wins:[0,0],ties:0,chicken:[0,0],bestWave:0},
   queues:{}, current:null, undo:null, rotateIdx:0, finished:false
 };
@@ -2013,7 +2414,7 @@ function save(){
   try{
     localStorage.setItem("zuzweit3", JSON.stringify({
       n:S.names, s:S.scores, w:S.wave, m:S.modes, l:S.levels, p:S.pick, g:S.goal, r:S.round,
-      jo:S.jokerOn, pe:S.penalty, so:S.sound, j:S.joker, c:S.custom, f:S.favs, st:S.stats, ev:S.evening, ad:S.advent, zi:S.ziele, wu:S.wunsch
+      jo:S.jokerOn, pe:S.penalty, so:S.sound, j:S.joker, c:S.custom, f:S.favs, st:S.stats, ev:S.evening, ad:S.advent, pin:S.pin, zi:S.ziele, wu:S.wunsch
     }));
   }catch(e){}
 }
@@ -2037,6 +2438,7 @@ function load(){
     if(d.st) S.stats=d.st;
     if(d.ev) S.evening={done:d.ev.done||[], notes:d.ev.notes||[]};
     if(d.ad) S.advent=d.ad;
+    if(typeof d.pin==="string") S.pin=d.pin;
     if(d.zi) S.ziele=d.zi;
     if(d.wu && d.wu.a) S.wunsch={a:{0:d.wu.a[0]||{},1:d.wu.a[1]||{}}, done:d.wu.done||[false,false]};
     if(d.c) S.custom=mergeCustom(emptyCustom(), d.c);
@@ -2148,7 +2550,7 @@ function renderStart(){
   $("poolHint").textContent = poolSize()+" Karten im Stapel"+(mine?", davon "+mine+" eigene":"")+". Leer? Wird neu gemischt.";
 }
 function show(screen){
-  ["screen-start","screen-game","screen-final","screen-edit","screen-evening","screen-minutes","screen-fragen","screen-advent","screen-escape","screen-dates","screen-notes","screen-wunsch","screen-klartext","screen-f36","screen-ziele","screen-hot"].forEach(function(id){
+  ["screen-start","screen-game","screen-final","screen-edit","screen-evening","screen-minutes","screen-fragen","screen-advent","screen-escape","screen-dates","screen-notes","screen-wunsch","screen-klartext","screen-f36","screen-ziele","screen-hot","screen-stellung","screen-rolle","screen-privat"].forEach(function(id){
     $(id).classList.toggle("hide", id!==screen);
   });
   window.scrollTo(0,0);
@@ -2172,7 +2574,10 @@ $("wuBtn").onclick=function(){ openWunsch(); };
 $("klBtn").onclick=function(){ openKlartext(); };
 $("f36Btn").onclick=function(){ open36(); };
 $("zielBtn").onclick=function(){ openZiele(); };
+$("privatBtn").onclick=function(){ openPrivat(); };
 $("hotBtn").onclick=function(){ openHot(); };
+$("stellBtn").onclick=function(){ openStellungen(); };
+$("rolleBtn").onclick=function(){ openRollen(); };
 
 /* ==================== ANZEIGE ==================== */
 function paintScores(){
@@ -3296,7 +3701,7 @@ $("wuResultBtn").onclick=function(){
 $("wuReset").onclick=function(){
   S.wunsch={a:{0:{},1:{}}, done:[false,false]}; save(); openWunsch();
 };
-$("wuHome").onclick=function(){ renderStart(); show("screen-start"); };
+$("wuHome").onclick=function(){ zeigePrivatHub(); };
 
 /* ==================== KLARTEXT: ABLAUF ==================== */
 var KL={ f:0, step:0, timer:null };
@@ -3559,7 +3964,165 @@ $("hotFav").onclick=function(){
 $("hotDiceBtn").onclick=function(){ rollDice(); };
 $("hotPlanBtn").onclick=function(){ makePlan(); };
 $("hotWissenBtn").onclick=function(){ showWissen(); };
-$("hotHome").onclick=function(){ renderStart(); show("screen-start"); };
+$("hotHome").onclick=function(){ zeigePrivatHub(); };
+
+
+/* ==================== STELLUNGEN: ABLAUF ==================== */
+var ST={ filter:"alle", idx:0, liste:[] };
+function openStellungen(){
+  renderStellFilter(); ST.idx=0; stellListe(); zeigeStellung();
+  show("screen-stellung");
+}
+function renderStellFilter(){
+  chipRow("stellFilter", STELL_FILTER, function(id){ return ST.filter===id; },
+    function(id){ ST.filter=id; ST.idx=0; renderStellFilter(); stellListe(); zeigeStellung(); });
+}
+function stellListe(){
+  ST.liste = STELLUNGEN.filter(function(p){ return ST.filter==="alle" || p.g===ST.filter; });
+}
+function zeigeStellung(){
+  if(!ST.liste.length) return;
+  if(ST.idx>=ST.liste.length) ST.idx=0;
+  if(ST.idx<0) ST.idx=ST.liste.length-1;
+  var p=ST.liste[ST.idx];
+  $("stellName").textContent=p.n;
+  $("stellMeta").textContent=({ruhig:"Ruhig",mittel:"Mittel",fordernd:"Fordernd"})[p.l]
+    +" · "+(ST.idx+1)+" von "+ST.liste.length;
+  var ol=$("stellSteps"); ol.innerHTML="";
+  p.s.forEach(function(t){ var li=document.createElement("li"); li.textContent=t; ol.appendChild(li); });
+  $("stellGut").textContent=p.gut;
+  $("stellTipp").textContent=p.tipp;
+  var c=$("stellCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+}
+$("stellNext").onclick=function(){ ST.idx++; zeigeStellung(); };
+$("stellPrev").onclick=function(){ ST.idx--; zeigeStellung(); };
+$("stellRandom").onclick=function(){
+  if(ST.liste.length>1){
+    var i=ST.idx;
+    while(i===ST.idx) i=Math.floor(Math.random()*ST.liste.length);
+    ST.idx=i;
+  }
+  zeigeStellung();
+};
+$("stellHome").onclick=function(){ zeigePrivatHub(); };
+
+/* ==================== ROLLENSPIEL: ABLAUF ==================== */
+var RS={ r:0, step:-2 };
+function openRollen(){
+  $("rolleRun").classList.add("hide");
+  $("rollePick").classList.remove("hide");
+  var host=$("rolleList"); host.innerHTML="";
+  ROLLEN.forEach(function(r,i){
+    var b=document.createElement("button");
+    b.className="btn "+(["btn--pink","btn--cyan","btn--yes"][i%3]);
+    b.style.textAlign="left";
+    var t=document.createElement("div");
+    t.style.fontFamily="'Bungee',sans-serif"; t.style.fontSize="1rem"; t.textContent=r.titel;
+    var s=document.createElement("div");
+    s.style.fontSize=".82rem"; s.style.fontWeight="700"; s.style.marginTop="3px"; s.textContent=r.dauer;
+    b.appendChild(t); b.appendChild(s);
+    b.onclick=function(){ RS={r:i, step:-2}; runRolle(); };
+    host.appendChild(b);
+  });
+  show("screen-rolle");
+}
+function runRolle(){
+  var r=ROLLEN[RS.r];
+  $("rollePick").classList.add("hide");
+  $("rolleRun").classList.remove("hide");
+  $("rolleTitel").textContent=r.titel;
+  var a=$("rolleActions"); a.innerHTML="";
+  function add(label,cls,fn){
+    var b=document.createElement("button"); b.className="btn "+cls; b.textContent=label; b.onclick=fn;
+    a.appendChild(b);
+  }
+  if(RS.step===-2){
+    $("rolleStufe").textContent="Vorbereitung";
+    $("rolleText").textContent=r.vorb;
+    add("Weiter","btn--go",function(){ RS.step=-1; runRolle(); });
+    add("Anderes Rollenspiel","btn--skip",function(){ openRollen(); });
+  } else if(RS.step===-1){
+    $("rolleStufe").textContent="Die Rollen";
+    $("rolleText").textContent=r.rollenText;
+    add("Los geht's","btn--go",function(){ RS.step=0; runRolle(); });
+    add("Zurück","btn--skip",function(){ RS.step=-2; runRolle(); });
+  } else if(RS.step>=r.schritte.length){
+    $("rolleStufe").textContent="Danach";
+    $("rolleText").textContent=r.ende;
+    add("Fertig","btn--go",function(){ openRollen(); });
+    add("Ein Schritt zurück","btn--skip",function(){ RS.step=r.schritte.length-1; runRolle(); });
+  } else {
+    $("rolleStufe").textContent="Schritt "+(RS.step+1)+" von "+r.schritte.length;
+    $("rolleText").textContent=r.schritte[RS.step];
+    add(RS.step===r.schritte.length-1 ? "Zum Abschluss" : "Weiter","btn--go",
+        function(){ RS.step++; runRolle(); });
+    add("Ein Schritt zurück","btn--skip",function(){ RS.step--; runRolle(); });
+  }
+  var c=$("rolleCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+}
+$("rolleHome").onclick=function(){ zeigePrivatHub(); };
+
+
+/* ==================== PRIVAT-BEREICH ==================== */
+var privatOffen=false;
+function openPrivat(){
+  if(S.pin && !privatOffen){
+    $("privatHub").classList.add("hide");
+    $("privatLock").classList.remove("hide");
+    $("pinInput").value=""; $("pinMsg").textContent="";
+    show("screen-privat");
+    return;
+  }
+  zeigePrivatHub();
+}
+function zeigePrivatHub(){
+  $("privatLock").classList.add("hide");
+  $("privatHub").classList.remove("hide");
+  $("privatHint").textContent = S.pin
+    ? "Mit Code gesichert. Beim nächsten Öffnen der Seite wird er wieder abgefragt."
+    : "Ohne Code. Über „Code“ kannst du einen setzen.";
+  show("screen-privat");
+}
+$("pinOpen").onclick=function(){
+  if($("pinInput").value===S.pin){
+    privatOffen=true; tone(760,120); zeigePrivatHub();
+  } else {
+    badSound();
+    $("pinMsg").textContent="Falscher Code.";
+    $("pinInput").value="";
+  }
+};
+$("pinInput").addEventListener("keydown",function(e){ if(e.key==="Enter") $("pinOpen").click(); });
+$("pinBack").onclick=function(){ renderStart(); show("screen-start"); };
+$("pinSet").onclick=function(){
+  if(S.pin){
+    S.pin=""; privatOffen=false; save();
+    $("privatHint").textContent="Code entfernt. Der Bereich öffnet jetzt wieder direkt.";
+    return;
+  }
+  $("privatHub").classList.add("hide");
+  $("privatLock").classList.remove("hide");
+  $("pinInput").value="";
+  $("pinMsg").textContent="Neuen Code eintippen, vier bis sechs Ziffern, dann auf Öffnen.";
+  $("pinOpen").textContent="Code setzen";
+  $("pinOpen").onclick=function(){
+    var v=$("pinInput").value.trim();
+    if(v.length<4){ $("pinMsg").textContent="Mindestens vier Ziffern."; return; }
+    S.pin=v; privatOffen=true; save(); tone(760,120); setTimeout(function(){ tone(980,160); },140);
+    $("pinOpen").textContent="Öffnen";
+    $("pinOpen").onclick=pinOpenNormal;
+    zeigePrivatHub();
+    $("privatHint").textContent="Code gesetzt. Vergiss ihn nicht — er liegt nur auf diesem Handy.";
+  };
+};
+function pinOpenNormal(){
+  if($("pinInput").value===S.pin){
+    privatOffen=true; tone(760,120); zeigePrivatHub();
+  } else {
+    badSound(); $("pinMsg").textContent="Falscher Code."; $("pinInput").value="";
+  }
+}
+$("privatHome").onclick=function(){ renderStart(); show("screen-start"); };
 
 /* ==================== HOMESCREEN ==================== */
 try{
