@@ -389,8 +389,9 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
       </div>
       <div class="tiles" style="margin-top:16px">
         <button class="tile t-red" id="hotBtn"><b>Heiße Karten</b><span>Sechs Themen, vier Stufen, Würfel</span></button>
-        <button class="tile t-red" id="stellBtn"><b>Stellungen</b><span>18 Anleitungen zum Nachmachen</span></button>
+        <button class="tile t-red" id="stellBtn"><b>Stellungen</b><span>28 Anleitungen zum Nachmachen</span></button>
         <button class="tile t-red" id="rolleBtn"><b>Rollenspiel</b><span>Acht Szenarien mit Ablauf</span></button>
+        <button class="tile t-red" id="vrBtn"><b>Verrucht</b><span>Nicht im Bett, nicht zu Hause</span></button>
         <button class="tile t-red" id="wuBtn"><b>Wunsch-Abgleich</b><span>Getrennt ankreuzen, nur Treffer zählen</span></button>
       </div>
       <div class="row two" style="margin-top:14px">
@@ -401,10 +402,49 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
     </div>
   </section>
 
+  <section id="screen-verrucht" class="hide">
+    <div class="panel" style="display:grid;gap:10px">
+      <div class="display" style="font-size:1.6rem">Verrucht</div>
+      <p style="font-size:.92rem">Alles, was nicht im Bett stattfindet. Plus ein Tag, der sich über Stunden aufbaut.</p>
+      <div class="chips" id="vrCats"></div>
+      <button class="btn btn--small" id="vrTagBtn">Der lange Tag</button>
+      <p class="hint" id="vrHint"></p>
+    </div>
+
+    <div id="vrCardWrap" class="hide" style="margin-top:16px">
+      <div class="card" id="vrCard">
+        <span class="badge m-hot" id="vrBadge">Karte</span>
+        <div class="q small" id="vrText"></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn btn--go" id="vrNext">Nächste Karte</button>
+        <button class="btn btn--skip" id="vrFav">Karte merken</button>
+      </div>
+    </div>
+
+    <div id="vrTag" class="hide" style="margin-top:16px">
+      <div class="card" id="tagCard">
+        <span class="badge m-hot">Der lange Tag</span>
+        <div class="dice">
+          <div class="dicerow"><b>Morgens</b><span id="tagMorgens"></span></div>
+          <div class="dicerow"><b>Mittags</b><span id="tagMittags"></span></div>
+          <div class="dicerow"><b>Nachmittags</b><span id="tagNachmittags"></span></div>
+          <div class="dicerow"><b>Abends</b><span id="tagAbends"></span></div>
+          <div class="dicerow"><b>Nachts</b><span id="tagNachts"></span></div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn btn--go" onclick="langerTag()">Neuen Tag würfeln</button>
+      </div>
+    </div>
+
+    <button class="btn btn--small" id="vrHome" style="margin-top:14px">Zurück</button>
+  </section>
+
   <section id="screen-stellung" class="hide">
     <div class="panel" style="display:grid;gap:10px">
       <div class="display" style="font-size:1.6rem">Stellungen</div>
-      <p style="font-size:.92rem">18 Stellungen mit Anleitung. Schritt für Schritt nachmachen, nichts würfeln.</p>
+      <p style="font-size:.92rem">28 Stellungen mit Anleitung. Schritt für Schritt nachmachen, nichts würfeln.</p>
       <div class="chips" id="stellFilter"></div>
     </div>
     <div style="margin-top:16px">
@@ -2075,6 +2115,7 @@ var HOTWISSEN=[
   "Käfig und Orgasmuskontrolle: täglich rausnehmen, waschen, auf Druckstellen achten. Bei Taubheit oder Verfärbung sofort ab.",
   "Alles Harte vorher nüchtern besprechen, nicht mittendrin. Poppers und Alkohol verschieben die eigene Grenze.",
   "Neben dem Stop-Wort noch ein Zeichen ausmachen für den Fall, dass der Mund nicht frei ist: zweimal klopfen oder etwas fallen lassen.",
+  "Sex an öffentlichen Orten kann in Deutschland als Erregung öffentlichen Ärgernisses geahndet werden, wenn jemand ungewollt zuschaut. Abgelegen und nachts ist nicht dasselbe wie erlaubt.",
   "Nach harten Sachen gehört Aftercare dazu: Decke, Wasser, zehn Minuten nebeneinander liegen und reden. Nicht optional."
 ];
 
@@ -2250,6 +2291,87 @@ var STELLUNGEN=[
    gut:"Wenn ihr müde seid, aber nicht ohne wollt.",
    tipp:"Ein Tropfen Gel macht aus der Nummer etwas völlig anderes."},
 
+  {n:"Kissenberg", g:"anal", l:"mittel",
+   s:["Stapelt drei bis vier Kissen übereinander, mitten aufs Bett.",
+      "Er legt sich mit dem Oberkörper drüber, Hüfte oben, Oberkörper abwärts.",
+      "Du kniest dahinter. Der Winkel ergibt sich von selbst.",
+      "Legst du dich mit drauf, wird es enger und langsamer."],
+   gut:"Tiefe ohne Kraftaufwand. Er kann sich komplett hängen lassen.",
+   tipp:"Funktioniert mit Dildo genauso — du hast freie Sicht und beide Hände."},
+
+  {n:"Scharnier", g:"anal", l:"fordernd",
+   s:["Er geht in den Vierfüßlerstand, du kniest dahinter.",
+      "Statt ihn an der Hüfte zu greifen, lehnst du dich nach hinten und stützt dich mit den Händen ab.",
+      "Er drückt sich dir entgegen, du schwingst aus der Hüfte dagegen.",
+      "Rhythmus müsst ihr suchen — am Anfang funktioniert es nie sofort."],
+   gut:"Die Arbeit verteilt sich auf beide. Keiner ist nach zehn Minuten fertig.",
+   tipp:"Sieht leichter aus, als es ist. Die ersten Versuche ruhig lachen und nochmal."},
+
+  {n:"Gespaltener Bambus", g:"anal", l:"fordernd",
+   s:["Er liegt auf dem Rücken, ein Bein ausgestreckt, das andere angezogen.",
+      "Die Wade des angezogenen Beins legt er dir auf die Schulter.",
+      "Du lehnst dich gegen dieses Bein und dringst langsam ein.",
+      "Nach ein paar Minuten die Beine tauschen — der Winkel verschiebt sich komplett."],
+   gut:"Trifft die Prostata bei fast jeder Bewegung. Sehr direkt.",
+   tipp:"Zu steil wird schnell zu viel. Lieber flacher und dafür länger."},
+
+  {n:"Ruderboot", g:"anal", l:"mittel",
+   s:["Er liegt auf dem Rücken, du setzt dich seitlich auf ihn, nicht frontal.",
+      "Ein Arm stützt hinter dir ab, die Beine liegen seitlich an seiner Hüfte.",
+      "Du wiegst dich vor und zurück statt auf und ab.",
+      "Wechsle die Seite, wenn der Arm müde wird."],
+   gut:"Völlig anderer Winkel als alles andere. Er spürt Druck, wo sonst keiner ist.",
+   tipp:"Langsam anfangen, die Richtung ist ungewohnt für beide."},
+
+  {n:"Wasser und Milch", g:"anal", l:"mittel",
+   s:["Du sitzt auf einem stabilen Stuhl, Füße fest auf dem Boden.",
+      "Er hockt sich auf deinen Schoß, Gesicht zu dir, Füße hinter dir auf der Sitzfläche.",
+      "In der Hocke öffnet er sich fast von allein, du kommst von unten rein.",
+      "Er drückt sich aus den Waden hoch und lässt sich wieder sinken."],
+   gut:"Er steuert alles, ihr seht euch dabei an, eine Hand bleibt frei.",
+   tipp:"Hocker ohne Lehne ist besser als Sessel. Anstrengend für die Waden — plant Pausen."},
+
+  {n:"Getragen", g:"anal", l:"fordernd",
+   s:["Er sitzt auf der Kante von Tisch oder Kommode, du stehst davor.",
+      "Er legt die Beine um dich, Arme um deinen Nacken.",
+      "Du hältst ihn unter den Oberschenkeln. Kante trägt das meiste Gewicht.",
+      "Freitragend nur, wenn ihr beide wisst, dass es geht."],
+   gut:"Die Nummer für zwischendurch, wenn ihr es nicht bis ins Schlafzimmer schafft.",
+   tipp:"Immer eine Kante oder Wand als Auflage, sonst geht es auf den Rücken."},
+
+  {n:"Treppenstufe", g:"anal", l:"mittel",
+   s:["Er stellt sich zwei Stufen über dich und beugt sich nach vorn.",
+      "Hände aufs Geländer oder auf die Stufe über ihm.",
+      "Der Höhenunterschied ergibt genau die richtige Position.",
+      "Nicht auf nackten Holzstufen — Decke drunter."],
+   gut:"Spontan und steil. Kein Möbelstück nötig.",
+   tipp:"Suche vorher die Stufenhöhe, die passt. Eine Stufe zu viel ändert alles."},
+
+  {n:"Umgekehrter Reiter", g:"anal", l:"fordernd",
+   s:["Er liegt, du sitzt mit dem Rücken zu ihm, Füße flach neben seinen Hüften.",
+      "Stütz dich an seinen Oberschenkeln ab und hebe dich aus den Beinen.",
+      "Er kann dabei von unten mitnehmen oder völlig still liegen.",
+      "Nach vorn lehnen macht den Winkel steiler."],
+   gut:"Tiefster Winkel von allen Reitpositionen.",
+   tipp:"Oberschenkel brennen nach zwei Minuten — als Einstieg nehmen, nicht als Hauptteil."},
+
+  {n:"Gegen die Scheibe", g:"anal", l:"fordernd",
+   s:["Nachts, Licht aus, Vorhang auf. Er stützt sich am Fensterrahmen ab.",
+      "Du stehst hinter ihm, Höhenunterschied über die Beinstellung ausgleichen.",
+      "Von draußen ist bei dunklem Zimmer nichts zu sehen — das Gefühl bleibt trotzdem.",
+      "Fenster zu lassen, sonst hören es die Nachbarn."],
+   gut:"Der Kick, ohne dass wirklich etwas passiert.",
+   tipp:"Vorher einmal von draußen schauen, wie dunkel es wirklich ist."},
+
+  {n:"Über die Lehne", g:"anal", l:"mittel",
+   s:["Er beugt sich über die Rückenlehne vom Sofa, Füße bleiben auf dem Boden.",
+      "Oberkörper liegt auf, Arme hängen in die Polster.",
+      "Du stehst dahinter — die Lehne bestimmt Winkel und Tempo.",
+      "Kissen auf die Lehne, wenn sie hart ist."],
+   gut:"Zwischen stehend und Doggy. Er muss sich nicht halten.",
+   tipp:"Die beste Nicht-im-Bett-Stellung für lange Nummern."}
+,
+
   {n:"Quer daneben sitzen", g:"hand", l:"mittel",
    s:["Er liegt auf dem Rücken, du sitzt quer neben seiner Hüfte.",
       "Eine Hand an ihm, die andere auf seiner Brust oder am Hals, ohne Druck.",
@@ -2368,6 +2490,86 @@ var ROLLEN=[
    ],
    ende:"Später auspacken. Oder morgen."}
 ];
+
+
+/* ==================== VERRUCHT ==================== */
+var VERRUCHT={
+  zuhause:{ label:"Nicht im Bett", cards:[
+    "Küchentheke. Er sitzt drauf, du stehst davor. Das Abendessen wartet.",
+    "Esstisch. Alles runter, was stört. Der Rest bleibt liegen.",
+    "Treppenstufen. Er zwei Stufen höher, du stehst. Geländer festhalten.",
+    "Waschmaschine im Schleudergang. Er sitzt drauf, du machst den Rest.",
+    "Türrahmen. Er stützt sich links und rechts ab, du von hinten.",
+    "Vor dem Spiegel, Licht an. Ihr schaut euch beide dabei zu.",
+    "Dusche, er mit dem Gesicht zur Wand. Silikongel, Wasser spült alles andere weg.",
+    "Badewanne, einer liegt, einer kniet. Weniger Wasser, mehr Platz.",
+    "Sofa, Rückenlehne. Er beugt sich drüber, Beine auf dem Boden.",
+    "Fenster, Vorhang auf, Licht aus. Nachts sieht niemand rein, das Gefühl bleibt trotzdem.",
+    "Flur, direkt nach dem Heimkommen. Jacke bleibt an.",
+    "Auf dem Boden, ohne Decke, ohne Kissen. Einfach da, wo ihr gerade steht."
+  ]},
+  tag:{ label:"Über den Tag", cards:[
+    "Er legt dir morgens einen Plug ein. Du trägst ihn, bis er es erlaubt.",
+    "Keine Unterwäsche heute. Er darf das jederzeit nachprüfen.",
+    "Du schickst ihm mittags ein Bild. Er bestimmt vorher, wovon.",
+    "Jede Stunde eine Nachricht, was du gerade mit ihm machen würdest.",
+    "Er schreibt dir eine Uhrzeit. Bis dahin fasst du dich nicht an.",
+    "Du darfst heute kommen — aber nur mit seiner Erlaubnis, egal wie oft du fragst.",
+    "Beim Essen auswärts: eine Hand unterm Tisch, Gesicht bleibt normal.",
+    "Er sagt dir heute Morgen, was abends passiert. Mehr nicht. Und du denkst den ganzen Tag dran.",
+    "Zieh heute an, was er ausgesucht hat. Auch drunter.",
+    "Im Auto, auf dem Parkplatz, bevor ihr reingeht. Nur mit den Händen."
+  ]},
+  unterwegs:{ label:"Unterwegs", cards:[
+    "Hotelzimmer, Balkontür auf, Licht aus.",
+    "Sauna oder Therme: ein Blick, mehr nicht — aber der muss sitzen.",
+    "Umkleidekabine, nur Küssen. Rausgehen, bevor ihr weitermacht.",
+    "Autofahrt, er legt dir unterwegs die Hand auf den Oberschenkel und nimmt sie nicht weg.",
+    "Hotelaufzug, drei Etagen. Mehr Zeit habt ihr nicht.",
+    "Zelt oder Ferienwohnung mit dünnen Wänden. Leise sein ist Teil der Sache.",
+    "Darkroom oder Club, nur zu zweit hin. Schauen ist erlaubt, anfassen nur euch.",
+    "Am Wasser, nachts, niemand da. Handtuch mitnehmen.",
+    "Im Garten, nach Mitternacht, kein Licht an."
+  ]},
+  frech:{ label:"Dreist", cards:[
+    "Zieh ihn an, wo euch jemand hören könnte, aber nicht sehen.",
+    "Flüster ihm in Gesellschaft etwas ins Ohr, das er nicht erwidern kann.",
+    "Lass ihn vor dir knien, während du noch angezogen bist.",
+    "Zieh dich aus, bleib stehen und lass ihn zehn Minuten nur zuschauen.",
+    "Schick ihm ein Video, das er erst öffnen darf, wenn er allein ist.",
+    "Nimm ihn mitten am Tag, zwischen zwei Terminen.",
+    "Sag ihm beim Frühstück, was du nachts gedacht hast. Wortwörtlich.",
+    "Zieh ihm beim Zähneputzen die Hose runter und mach einfach weiter.",
+    "Weck ihn damit, statt mit Kaffee."
+  ]}
+};
+
+var LANGERTAG={
+  morgens:["Er legt dir einen Plug ein, bevor du aufstehst.",
+           "Erste Nachricht vor dem Frühstück: eine Anweisung für den Tag.",
+           "Er bestimmt, was du anziehst. Auch drunter.",
+           "Zehn Minuten im Bett, nur Hände — und dann aufhören.",
+           "Keine Unterwäsche heute."],
+  mittags:["Du schickst ihm ein Bild. Er hat vorher gesagt, wovon.",
+           "Nachricht mit genau einem Satz, der ihm den Nachmittag versaut.",
+           "Er ruft an und sagt dir, was du dir vorstellen sollst.",
+           "Du darfst dich anfassen, aber nicht kommen. Zehn Minuten.",
+           "Treffpunkt für fünf Minuten, irgendwo unterwegs. Nur Küssen."],
+  nachmittags:["Er schickt dir die Uhrzeit für heute Abend. Sonst nichts.",
+               "Du bereitest alles vor: Gel, Handtuch, was ihr sonst braucht. Und schickst ein Foto davon.",
+               "Ab jetzt keine Nachrichten mehr bis zum Abend.",
+               "Du duschst und ziehst dich an, als wäret ihr verabredet.",
+               "Zwei Stufen vorbereiten: Plug raus, duschen, warten."],
+  abends:["Er entscheidet, womit ihr anfangt. Du fragst nicht.",
+          "Erst essen, erst reden, erst alles normal — und dann gar nichts mehr davon.",
+          "Augenbinde, sobald die Tür zu ist.",
+          "Zieht eine Karte aus Heiße Karten, Stufe Hardcore.",
+          "Er nimmt sich, was er den ganzen Tag angekündigt hat."],
+  nachts:["Liegen bleiben, reden, nichts mehr machen.",
+          "Noch eine Runde, aber langsam und ohne Ziel.",
+          "Zusammen duschen und so einschlafen.",
+          "Erzählt euch, was vom Tag am besten war — und was ihr wiederholt."]
+};
 
 var MODES = [
   {id:"quiz",  label:"Partner-Quiz"},
@@ -2550,7 +2752,7 @@ function renderStart(){
   $("poolHint").textContent = poolSize()+" Karten im Stapel"+(mine?", davon "+mine+" eigene":"")+". Leer? Wird neu gemischt.";
 }
 function show(screen){
-  ["screen-start","screen-game","screen-final","screen-edit","screen-evening","screen-minutes","screen-fragen","screen-advent","screen-escape","screen-dates","screen-notes","screen-wunsch","screen-klartext","screen-f36","screen-ziele","screen-hot","screen-stellung","screen-rolle","screen-privat"].forEach(function(id){
+  ["screen-start","screen-game","screen-final","screen-edit","screen-evening","screen-minutes","screen-fragen","screen-advent","screen-escape","screen-dates","screen-notes","screen-wunsch","screen-klartext","screen-f36","screen-ziele","screen-hot","screen-stellung","screen-rolle","screen-privat","screen-verrucht"].forEach(function(id){
     $(id).classList.toggle("hide", id!==screen);
   });
   window.scrollTo(0,0);
@@ -2577,6 +2779,7 @@ $("zielBtn").onclick=function(){ openZiele(); };
 $("privatBtn").onclick=function(){ openPrivat(); };
 $("hotBtn").onclick=function(){ openHot(); };
 $("stellBtn").onclick=function(){ openStellungen(); };
+$("vrBtn").onclick=function(){ openVerrucht(); };
 $("rolleBtn").onclick=function(){ openRollen(); };
 
 /* ==================== ANZEIGE ==================== */
@@ -4123,6 +4326,55 @@ function pinOpenNormal(){
   }
 }
 $("privatHome").onclick=function(){ renderStart(); show("screen-start"); };
+
+
+/* ==================== VERRUCHT: ABLAUF ==================== */
+var VR={ cat:"zuhause", queue:[], card:"" };
+function openVerrucht(){
+  $("vrCardWrap").classList.add("hide");
+  $("vrTag").classList.add("hide");
+  renderVrCats();
+  nextVerrucht();
+  show("screen-verrucht");
+}
+function renderVrCats(){
+  chipRow("vrCats", Object.keys(VERRUCHT).map(function(k){ return {id:k,label:VERRUCHT[k].label}; }),
+    function(id){ return VR.cat===id; },
+    function(id){ VR.cat=id; VR.queue=[]; renderVrCats(); nextVerrucht(); });
+}
+function nextVerrucht(){
+  $("vrTag").classList.add("hide");
+  if(!VR.queue.length) VR.queue=shuffle(VERRUCHT[VR.cat].cards.slice());
+  VR.card=VR.queue.pop();
+  $("vrCardWrap").classList.remove("hide");
+  $("vrBadge").textContent=VERRUCHT[VR.cat].label;
+  $("vrText").textContent=VR.card;
+  $("vrHint").textContent="Noch "+VR.queue.length+" in dieser Kategorie.";
+  var c=$("vrCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+}
+function langerTag(){
+  function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+  $("vrCardWrap").classList.add("hide");
+  $("vrTag").classList.remove("hide");
+  $("tagMorgens").textContent=pick(LANGERTAG.morgens);
+  $("tagMittags").textContent=pick(LANGERTAG.mittags);
+  $("tagNachmittags").textContent=pick(LANGERTAG.nachmittags);
+  $("tagAbends").textContent=pick(LANGERTAG.abends);
+  $("tagNachts").textContent=pick(LANGERTAG.nachts);
+  var c=$("tagCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+  $("vrHint").textContent="Ein Tag, fünf Stationen. Wer die Ansagen macht, klärt ihr vorher.";
+}
+$("vrNext").onclick=function(){ nextVerrucht(); };
+$("vrTagBtn").onclick=function(){ langerTag(); };
+$("vrFav").onclick=function(){
+  if(!VR.card) return;
+  var dup=false;
+  S.favs.forEach(function(f){ if(f.t===VR.card) dup=true; });
+  if(!dup){ S.favs.push({m:"dare", t:VR.card}); save(); }
+  tone(880,120);
+  $("vrHint").textContent = dup ? "Hast du dir schon gemerkt." : "Gemerkt.";
+};
+$("vrHome").onclick=function(){ zeigePrivatHub(); };
 
 /* ==================== HOMESCREEN ==================== */
 try{
