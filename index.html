@@ -29,6 +29,9 @@
   --paper:#170F1E; --ink:#FDF4E4; --card:#FBF3E6; --card-ink:#140F19; --dot:rgba(255,255,255,.12);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{overflow-x:hidden}
+input,textarea,button{min-width:0;max-width:100%}
+.panel,.card,.tile{overflow-wrap:anywhere}
 html,body{height:100%}
 body{
   background-color:var(--paper);
@@ -43,7 +46,7 @@ body{
 .app{width:100%;max-width:520px;display:flex;flex-direction:column;gap:16px;margin-block:auto}
 h1,h2,.display{font-family:'Bungee','Archivo',Impact,sans-serif;font-weight:400;line-height:.95}
 
-.panel{background:var(--card);color:var(--card-ink);border:4px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px}
+.panel{overflow:hidden;background:var(--card);color:var(--card-ink);border:4px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px}
 button{font:inherit;color:inherit;cursor:pointer;background:none;border:none}
 .btn{display:block;width:100%;text-align:center;background:var(--card);color:var(--card-ink);
   border:4px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px 16px;
@@ -58,6 +61,7 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:none}
 .btn--small{padding:10px;font-size:.9rem}
 .btn:focus-visible,.chip:focus-visible,.icon:focus-visible,input:focus-visible,textarea:focus-visible,.del:focus-visible{outline:4px solid var(--red);outline-offset:3px}
 .row{display:grid;gap:10px}
+.row>*{min-width:0}
 .row.two{grid-template-columns:1fr 1fr}
 
 .topbar{display:flex;align-items:stretch;gap:10px}
@@ -74,14 +78,15 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:none}
 .strip{display:flex;justify-content:space-between;gap:10px;font-size:.8rem;font-weight:800;
   border:3px solid var(--line);border-radius:10px;padding:5px 10px;background:var(--card);color:var(--card-ink)}
 
-.sect{font-family:'Bungee',sans-serif;font-size:.95rem;display:flex;align-items:center;gap:9px;
-  margin:4px 0 10px}
+.sect{font-family:'Bungee',sans-serif;font-size:.9rem;display:flex;align-items:center;gap:9px;
+  margin:2px 0 11px}
 .sect::before{content:"";width:15px;height:15px;background:var(--accent);border:3px solid var(--line);
   border-radius:4px;flex:0 0 auto}
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;align-items:stretch}
 .tile{position:relative;text-align:left;background:var(--card);color:var(--card-ink);
   border:4px solid var(--line);border-radius:14px;box-shadow:5px 5px 0 var(--line);
-  padding:12px 12px 12px 18px;overflow:hidden;transition:transform .08s,box-shadow .08s}
+  padding:13px 13px 13px 19px;overflow:hidden;transition:transform .08s,box-shadow .08s;
+  display:flex;flex-direction:column;justify-content:center;min-height:74px}
 .tile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:10px;background:var(--accent)}
 .tile b{display:block;font-size:1rem;font-weight:800;line-height:1.15}
 .tile span{display:block;font-size:.76rem;font-weight:700;opacity:.7;margin-top:3px;line-height:1.3}
@@ -94,15 +99,17 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:none}
 .t-mint{--accent:var(--mint)}
 .t-yellow{--accent:var(--yellow)}
 .t-quiet{--accent:var(--ink)}
-.pinrow{display:flex;gap:10px}
-.pinrow input{text-align:center;letter-spacing:.4em;font-family:'Bungee',sans-serif;font-size:1.3rem}
-.hero{text-align:center;padding:10px 14px 26px}
-.hero h1{font-size:clamp(2.6rem,15vw,4.2rem);color:var(--yellow);
+.pinrow{display:flex;gap:10px;align-items:stretch}
+.pinrow input{flex:1 1 auto;min-width:0;text-align:center;letter-spacing:.4em;
+  font-family:'Bungee',sans-serif;font-size:1.2rem}
+.pinrow .btn{flex:0 0 auto;width:auto;white-space:nowrap}
+.hero{text-align:center;padding:4px 14px 22px}
+.hero h1{font-size:clamp(2.3rem,13vw,3.6rem);color:var(--yellow);
   text-shadow:4px 4px 0 var(--line),-2px -2px 0 var(--line),2px -2px 0 var(--line),-2px 2px 0 var(--line)}
 .hero h1 em{font-style:normal;display:block;color:var(--pink)}
-.hero p{margin-top:14px;font-size:.95rem;max-width:34ch;margin-inline:auto}
+.hero p{margin-top:12px;font-size:.9rem;max-width:32ch;margin-inline:auto}
 .label{font-family:'Bungee',sans-serif;font-size:1rem;margin-bottom:10px;display:block}
-input[type=text],textarea{width:100%;border:4px solid var(--line);border-radius:14px;padding:12px 14px;
+input[type=text],input[type=password],textarea{width:100%;min-width:0;max-width:100%;border:4px solid var(--line);border-radius:14px;padding:12px 14px;
   background:var(--card);color:var(--card-ink);font:inherit;font-weight:800;resize:vertical}
 textarea{font-size:.8rem;font-weight:600;min-height:90px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -220,7 +227,7 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
       <p>Ein Handy, zwei Leute. Reden, spielen, Zeit füreinander.</p>
     </div>
 
-    <h2 class="sect t-pink">Reden</h2>
+    <h2 class="sect t-pink">Miteinander reden</h2>
     <div class="tiles">
       <button class="tile t-pink" id="fragBtn"><b>Fragenstapel</b><span>179 Fragen, sieben Themen</span></button>
       <button class="tile t-pink" id="f36Btn"><b>36 Fragen</b><span>Drei Stufen, ein Abend</span></button>
@@ -228,57 +235,29 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
       <button class="tile t-pink" id="klBtn"><b>Klartext</b><span>Geführte Gespräche mit Redezeit</span></button>
     </div>
 
-    <h2 class="sect t-cyan">Zeit zu zweit</h2>
+    <h2 class="sect t-cyan">Etwas unternehmen</h2>
     <div class="tiles">
       <button class="tile t-cyan" id="evBtn"><b>Abend zu zweit</b><span>Fünf Etappen durch einen Abend</span></button>
       <button class="tile t-cyan" id="dateBtn"><b>Date-Ideen</b><span>47 Stück, filterbar</span></button>
       <button class="tile t-cyan" id="escBtn"><b>Escape Dinner</b><span>Rätsel zwischen den Gängen</span></button>
-      <button class="tile t-cyan" id="noteBtn"><b>Sticky Notes</b><span>Botschaften zum Verschicken</span></button>
+      <button class="tile t-cyan" id="advBtn"><b>Adventskalender</b><span>24 Türchen, eins pro Tag</span></button>
+    </div>
+
+    <h2 class="sect t-mint">Im Alltag</h2>
+    <div class="tiles">
+      <button class="tile t-mint" id="noteBtn"><b>Sticky Notes</b><span>Botschaften zum Verschicken</span></button>
       <button class="tile t-mint" id="zielBtn"><b>Wir-Liste</b><span>Vorgenommen und abgehakt</span></button>
-      <button class="tile t-mint" id="advBtn"><b>Adventskalender</b><span>24 Türchen, eins pro Tag</span></button>
+    </div>
+
+    <h2 class="sect t-yellow">Spielen</h2>
+    <div class="tiles">
+      <button class="tile t-yellow wide" id="spielBtn"><b>Spielabend mit Punkten</b><span>Neun Spielarten, 443 Karten, Punkte und Statistik</span></button>
     </div>
 
     <div class="tiles">
       <button class="tile t-quiet wide" id="privatBtn"><b>Privat</b><span>Nur für euch beide</span></button>
     </div>
 
-    <div class="panel" style="display:grid;gap:14px">
-      <h2 class="sect t-yellow" style="margin:0 0 2px">Spielabend mit Punkten</h2>
-      <div>
-        <span class="label">Wer spielt?</span>
-        <div class="row two">
-          <input type="text" id="n1" placeholder="Uli" maxlength="14" autocomplete="off">
-          <input type="text" id="n2" placeholder="Kevin" maxlength="14" autocomplete="off">
-        </div>
-      </div>
-      <div>
-        <span class="label">Spielarten</span>
-        <div class="chips" id="modeChips"></div>
-      </div>
-      <div>
-        <span class="label">Wie tief soll's gehen?</span>
-        <div class="chips" id="levelChips"></div>
-      </div>
-      <div>
-        <span class="label">Wer bestimmt die Kategorie?</span>
-        <div class="chips" id="pickChips"></div>
-        <p class="hint">Wer dran ist: du suchst jede Runde selbst aus. Reihum: der Reihe nach durch alle Spielarten. Zufall: die App würfelt.</p>
-      </div>
-      <div>
-        <span class="label">Spielende</span>
-        <div class="chips" id="goalChips"></div>
-      </div>
-      <div>
-        <span class="label">Extras</span>
-        <div class="chips" id="extraChips"></div>
-        <p class="hint" id="poolHint"></p>
-      </div>
-      <button class="btn btn--go" id="startBtn">Los geht's</button>
-      <div class="row two">
-        <button class="btn btn--small" id="editBtn">Eigene Karten</button>
-        <button class="btn btn--small" id="statBtn">Statistik</button>
-      </div>
-    </div>
     <footer>Alles bleibt auf diesem Handy gespeichert.</footer>
   </section>
 
@@ -317,7 +296,7 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
       <div class="row" style="margin-top:18px">
         <button class="btn btn--go" id="againBtn">Neue Runde, Punkte auf null</button>
         <button class="btn" id="keepBtn">Weiterspielen, Punkte behalten</button>
-        <button class="btn btn--small" id="backBtn">Zurück zum Start</button>
+        <button class="btn btn--small" id="backBtn">Zurück zur Übersicht</button>
       </div>
     </div>
   </section>
@@ -369,14 +348,53 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
     </div>
   </div>
 
+  <section id="screen-spiel" class="hide">
+    <div class="panel" style="display:grid;gap:14px">
+      <h2 class="sect t-yellow" style="margin:0 0 2px">Spielabend mit Punkten</h2>
+      <div>
+        <span class="label">Wer spielt?</span>
+        <div class="row two">
+          <input type="text" id="n1" placeholder="Uli" maxlength="14" autocomplete="off">
+          <input type="text" id="n2" placeholder="Kevin" maxlength="14" autocomplete="off">
+        </div>
+      </div>
+      <div>
+        <span class="label">Spielarten</span>
+        <div class="chips" id="modeChips"></div>
+      </div>
+      <div>
+        <span class="label">Wie tief soll's gehen?</span>
+        <div class="chips" id="levelChips"></div>
+      </div>
+      <div>
+        <span class="label">Wer bestimmt die Kategorie?</span>
+        <div class="chips" id="pickChips"></div>
+        <p class="hint">Wer dran ist: du suchst jede Runde selbst aus. Reihum: der Reihe nach durch alle Spielarten. Zufall: die App würfelt.</p>
+      </div>
+      <div>
+        <span class="label">Spielende</span>
+        <div class="chips" id="goalChips"></div>
+      </div>
+      <div>
+        <span class="label">Extras</span>
+        <div class="chips" id="extraChips"></div>
+        <p class="hint" id="poolHint"></p>
+      </div>
+      <button class="btn btn--go" id="startBtn">Los geht's</button>
+      <div class="row two">
+        <button class="btn btn--small" id="editBtn">Eigene Karten</button>
+        <button class="btn btn--small" id="statBtn">Statistik</button>
+      </div>
+    </div>
+    <button class="btn btn--small" id="spielBack" style="margin-top:14px">Zurück zum Start</button>
+  </section>
+
   <section id="screen-privat" class="hide">
     <div id="privatLock" class="hide">
       <div class="panel" style="display:grid;gap:12px">
         <div class="display" style="font-size:1.5rem">Code eingeben</div>
-        <div class="pinrow">
-          <input type="password" inputmode="numeric" id="pinInput" maxlength="6" placeholder="····" autocomplete="off">
-          <button class="btn btn--go" id="pinOpen" style="width:auto;padding:14px 20px">Öffnen</button>
-        </div>
+        <input type="password" inputmode="numeric" id="pinInput" class="pincode" maxlength="6" placeholder="····" autocomplete="off">
+        <button class="btn btn--go" id="pinOpen">Öffnen</button>
         <p class="hint" id="pinMsg"></p>
         <button class="btn btn--small" id="pinBack">Zurück zum Start</button>
       </div>
@@ -2752,7 +2770,7 @@ function renderStart(){
   $("poolHint").textContent = poolSize()+" Karten im Stapel"+(mine?", davon "+mine+" eigene":"")+". Leer? Wird neu gemischt.";
 }
 function show(screen){
-  ["screen-start","screen-game","screen-final","screen-edit","screen-evening","screen-minutes","screen-fragen","screen-advent","screen-escape","screen-dates","screen-notes","screen-wunsch","screen-klartext","screen-f36","screen-ziele","screen-hot","screen-stellung","screen-rolle","screen-privat","screen-verrucht"].forEach(function(id){
+  ["screen-start","screen-game","screen-final","screen-edit","screen-evening","screen-minutes","screen-fragen","screen-advent","screen-escape","screen-dates","screen-notes","screen-wunsch","screen-klartext","screen-f36","screen-ziele","screen-hot","screen-stellung","screen-rolle","screen-privat","screen-verrucht","screen-spiel"].forEach(function(id){
     $(id).classList.toggle("hide", id!==screen);
   });
   window.scrollTo(0,0);
@@ -2777,6 +2795,9 @@ $("klBtn").onclick=function(){ openKlartext(); };
 $("f36Btn").onclick=function(){ open36(); };
 $("zielBtn").onclick=function(){ openZiele(); };
 $("privatBtn").onclick=function(){ openPrivat(); };
+$("spielBtn").onclick=function(){ openSpiel(); };
+$("spielBack").onclick=function(){ renderStart(); show("screen-start"); };
+function openSpiel(){ renderStart(); show("screen-spiel"); }
 $("hotBtn").onclick=function(){ openHot(); };
 $("stellBtn").onclick=function(){ openStellungen(); };
 $("vrBtn").onclick=function(){ openVerrucht(); };
@@ -3239,7 +3260,7 @@ function pickKind(kind){
 /* ==================== MENÜ, ENDE, STATISTIK ==================== */
 $("menuBtn").onclick=function(){ $("sheet").classList.remove("hide"); };
 $("mResume").onclick=function(){ $("sheet").classList.add("hide"); };
-$("mSettings").onclick=function(){ $("sheet").classList.add("hide"); renderStart(); show("screen-start"); };
+$("mSettings").onclick=function(){ $("sheet").classList.add("hide"); openSpiel(); };
 $("mCards").onclick=function(){ $("sheet").classList.add("hide"); renderEditor(); show("screen-edit"); };
 $("mStats").onclick=function(){ $("sheet").classList.add("hide"); openStats(); };
 $("mEnd").onclick=function(){ $("sheet").classList.add("hide"); finish(); };
