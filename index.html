@@ -74,7 +74,26 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:none}
 .strip{display:flex;justify-content:space-between;gap:10px;font-size:.8rem;font-weight:800;
   border:3px solid var(--line);border-radius:10px;padding:5px 10px;background:var(--card);color:var(--card-ink)}
 
-.hero{text-align:center;padding:24px 14px 26px}
+.sect{font-family:'Bungee',sans-serif;font-size:.95rem;display:flex;align-items:center;gap:9px;
+  margin:4px 0 10px}
+.sect::before{content:"";width:15px;height:15px;background:var(--accent);border:3px solid var(--line);
+  border-radius:4px;flex:0 0 auto}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.tile{position:relative;text-align:left;background:var(--card);color:var(--card-ink);
+  border:4px solid var(--line);border-radius:14px;box-shadow:5px 5px 0 var(--line);
+  padding:12px 12px 12px 18px;overflow:hidden;transition:transform .08s,box-shadow .08s}
+.tile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:10px;background:var(--accent)}
+.tile b{display:block;font-size:1rem;font-weight:800;line-height:1.15}
+.tile span{display:block;font-size:.76rem;font-weight:700;opacity:.7;margin-top:3px;line-height:1.3}
+.tile:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--line)}
+.tile:focus-visible{outline:4px solid var(--red);outline-offset:3px}
+.tile.wide{grid-column:1 / -1}
+.t-pink{--accent:var(--pink)}
+.t-cyan{--accent:var(--cyan)}
+.t-red{--accent:var(--red)}
+.t-mint{--accent:var(--mint)}
+.t-yellow{--accent:var(--yellow)}
+.hero{text-align:center;padding:10px 14px 26px}
 .hero h1{font-size:clamp(2.6rem,15vw,4.2rem);color:var(--yellow);
   text-shadow:4px 4px 0 var(--line),-2px -2px 0 var(--line),2px -2px 0 var(--line),-2px 2px 0 var(--line)}
 .hero h1 em{font-style:normal;display:block;color:var(--pink)}
@@ -107,6 +126,12 @@ textarea{font-size:.8rem;font-weight:600;min-height:90px}
 .badge.m-draw{background:var(--cyan);color:#0A1620}
 .badge.m-memory{background:var(--pink);color:#fff}
 .badge.m-team{background:var(--mint);color:#0B1A14}
+.badge.m-hot{background:var(--red);color:#fff}
+.badge.m-cyan{background:var(--cyan);color:#0A1620}
+.dice{display:grid;gap:10px;margin-top:4px}
+.dicerow{border:3px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--paper);color:var(--ink)}
+.dicerow b{display:block;font-size:.72rem;font-weight:800;opacity:.7;margin-bottom:2px}
+.dicerow span{font-family:'Bungee',sans-serif;font-size:1.05rem;line-height:1.2}
 .badge.m-choose{background:var(--card);color:var(--card-ink)}
 .badge.m-penalty{background:var(--red);color:#fff}
 .who{font-size:.95rem;font-weight:800}
@@ -183,30 +208,35 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
   <section id="screen-start">
     <div class="hero">
       <h1>ZU<em>ZWEIT</em></h1>
-      <p>Ein Handy, zwei Leute. Spielen, wenn euch nach Wettkampf ist — oder einfach Zeit zu zweit.</p>
+      <p>Ein Handy, zwei Leute. Reden, spielen, Zeit füreinander.</p>
     </div>
 
-    <span class="label" style="margin-bottom:8px">Reden</span>
-    <div class="row two" style="margin-bottom:16px">
-      <button class="btn btn--yes" id="fragBtn">Fragenstapel</button>
-      <button class="btn btn--pink" id="f36Btn">36 Fragen</button>
-      <button class="btn btn--cyan" id="minBtn">Zwei Minuten</button>
-      <button class="btn" id="klBtn">Klartext</button>
+    <h2 class="sect t-pink">Reden</h2>
+    <div class="tiles">
+      <button class="tile t-pink" id="fragBtn"><b>Fragenstapel</b><span>179 Fragen, sieben Themen</span></button>
+      <button class="tile t-pink" id="f36Btn"><b>36 Fragen</b><span>Drei Stufen, ein Abend</span></button>
+      <button class="tile t-pink" id="minBtn"><b>Zwei Minuten</b><span>Drei Fragen, schnell durch</span></button>
+      <button class="tile t-pink" id="klBtn"><b>Klartext</b><span>Geführte Gespräche mit Redezeit</span></button>
     </div>
 
-    <span class="label" style="margin-bottom:8px">Zeit zu zweit</span>
-    <div class="row two" style="margin-bottom:16px">
-      <button class="btn btn--pink" id="evBtn">Abend zu zweit</button>
-      <button class="btn btn--go" style="font-size:1rem;padding:14px" id="dateBtn">Date-Ideen</button>
-      <button class="btn btn--cyan" id="escBtn">Escape Dinner</button>
-      <button class="btn btn--yes" id="noteBtn">Sticky Notes</button>
-      <button class="btn btn--pink" id="wuBtn">Wunsch-Abgleich</button>
-      <button class="btn" id="zielBtn">Wir-Liste</button>
-      <button class="btn" id="advBtn" style="grid-column:1 / -1">Adventskalender</button>
+    <h2 class="sect t-cyan">Zeit zu zweit</h2>
+    <div class="tiles">
+      <button class="tile t-cyan" id="evBtn"><b>Abend zu zweit</b><span>Fünf Etappen durch einen Abend</span></button>
+      <button class="tile t-cyan" id="dateBtn"><b>Date-Ideen</b><span>47 Stück, filterbar</span></button>
+      <button class="tile t-cyan" id="escBtn"><b>Escape Dinner</b><span>Rätsel zwischen den Gängen</span></button>
+      <button class="tile t-cyan" id="noteBtn"><b>Sticky Notes</b><span>Botschaften zum Verschicken</span></button>
+      <button class="tile t-mint" id="zielBtn"><b>Wir-Liste</b><span>Vorgenommen und abgehakt</span></button>
+      <button class="tile t-mint" id="advBtn"><b>Adventskalender</b><span>24 Türchen, eins pro Tag</span></button>
+    </div>
+
+    <h2 class="sect t-red">Nur wir zwei</h2>
+    <div class="tiles">
+      <button class="tile t-red" id="hotBtn"><b>Heiße Karten</b><span>Sechs Themen, drei Stufen, Würfel</span></button>
+      <button class="tile t-red" id="wuBtn"><b>Wunsch-Abgleich</b><span>Getrennt ankreuzen, nur Treffer zählen</span></button>
     </div>
 
     <div class="panel" style="display:grid;gap:14px">
-      <div class="display" style="font-size:1.3rem">Spielabend mit Punkten</div>
+      <h2 class="sect t-yellow" style="margin:0 0 2px">Spielabend mit Punkten</h2>
       <div>
         <span class="label">Wer spielt?</span>
         <div class="row two">
@@ -331,6 +361,72 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
       <button class="btn btn--pink" id="mEnd">Spiel beenden</button>
     </div>
   </div>
+
+  <section id="screen-hot" class="hide">
+    <div class="panel" style="display:grid;gap:12px">
+      <div class="display" style="font-size:1.6rem">Nur wir zwei</div>
+      <p style="font-size:.92rem">Karten nach Thema und Stufe, ein Würfel, ein Abendplan und ein paar Hinweise, die man wissen sollte.</p>
+      <div class="chips" id="hotThemen"></div>
+      <div class="chips" id="hotStufen"></div>
+      <div class="row two">
+        <button class="btn btn--small" id="hotDiceBtn">Würfeln</button>
+        <button class="btn btn--small" id="hotPlanBtn">Abendplan</button>
+      </div>
+      <button class="btn btn--small" id="hotWissenBtn">Gut zu wissen</button>
+      <p class="hint" id="hotHint"></p>
+    </div>
+
+    <div id="hotCardWrap" class="hide">
+      <div class="card" id="hotCard">
+        <span class="badge m-hot" id="hotBadge">Karte</span>
+        <div class="q small" id="hotText"></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn btn--go" id="hotNext">Nächste Karte</button>
+        <button class="btn btn--skip" id="hotFav">Karte merken</button>
+      </div>
+    </div>
+
+    <div id="hotDice" class="hide">
+      <div class="card" id="diceCard">
+        <span class="badge m-hot">Würfel</span>
+        <div class="dice">
+          <div class="dicerow"><b>Was</b><span id="diceWas"></span></div>
+          <div class="dicerow"><b>Wo</b><span id="diceWo"></span></div>
+          <div class="dicerow"><b>Wie lang</b><span id="diceLang"></span></div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn btn--go" onclick="rollDice()">Nochmal würfeln</button>
+      </div>
+    </div>
+
+    <div id="hotPlan" class="hide">
+      <div class="card" id="planCard">
+        <span class="badge m-hot">Abendplan</span>
+        <div class="dice">
+          <div class="dicerow"><b>Anfang</b><span id="planA"></span></div>
+          <div class="dicerow"><b>Mitte</b><span id="planB"></span></div>
+          <div class="dicerow"><b>Ende</b><span id="planC"></span></div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn btn--go" onclick="makePlan()">Neuen Plan</button>
+      </div>
+    </div>
+
+    <div id="hotWissen" class="hide">
+      <div class="card" id="wissenCard">
+        <span class="badge m-cyan">Gut zu wissen</span>
+        <div class="q small" id="wissenText"></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn btn--go" onclick="showWissen()">Nächster Hinweis</button>
+      </div>
+    </div>
+
+    <button class="btn btn--small" id="hotHome" style="margin-top:14px">Zurück zum Start</button>
+  </section>
 
   <section id="screen-wunsch" class="hide">
     <div id="wuIntro">
@@ -1595,6 +1691,35 @@ var WUNSCH=[
   {g:"Mehr", t:"Gegenseitig zuschauen"},
   {g:"Reden",t:"Über Fantasien reden, ohne sie umzusetzen"},
   {g:"Reden",t:"Sagen, was gerade gut war, direkt danach"},
+  {g:"Praktiken",t:"Rimming geben"},
+  {g:"Praktiken",t:"Rimming bekommen"},
+  {g:"Praktiken",t:"Fingern"},
+  {g:"Praktiken",t:"Gefingert werden"},
+  {g:"Praktiken",t:"Blasen bis zum Schluss"},
+  {g:"Praktiken",t:"Im Mund kommen"},
+  {g:"Praktiken",t:"Tief blasen, so weit es geht"},
+  {g:"Praktiken",t:"69"},
+  {g:"Rollen",t:"Aktiv sein"},
+  {g:"Rollen",t:"Passiv sein"},
+  {g:"Rollen",t:"In einer Nacht die Rollen tauschen"},
+  {g:"Rollen",t:"Reiten"},
+  {g:"Rollen",t:"Von hinten"},
+  {g:"Rollen",t:"Von vorn, mit Augenkontakt"},
+  {g:"Rollen",t:"Einer sagt an, der andere macht"},
+  {g:"Mehr",t:"Plug tragen, auch außerhalb vom Bett"},
+  {g:"Mehr",t:"Dildo benutzen"},
+  {g:"Mehr",t:"Prostata-Vibrator"},
+  {g:"Mehr",t:"Edging, lange hinauszögern"},
+  {g:"Mehr",t:"Leichtes Spanking"},
+  {g:"Mehr",t:"Haare ziehen"},
+  {g:"Mehr",t:"Derber Dirty Talk"},
+  {g:"Mehr",t:"Fesseln mit Handschellen oder Gurten"},
+  {g:"Mehr",t:"Poppers"},
+  {g:"Mehr",t:"Ohne Kondom, wenn vorher geklärt"},
+  {g:"Mehr",t:"Mehr als einmal in einer Nacht"},
+  {g:"Mehr",t:"Direkt nach dem Aufwachen"},
+  {g:"Mehr",t:"Über eine Fantasie zu dritt reden, ohne sie umzusetzen"},
+  {g:"Mehr",t:"Video oder Fotos, die nur bei uns bleiben"},
   {g:"Reden",t:"Ein festes Wort, mit dem sofort Schluss ist"}
 ];
 
@@ -1700,6 +1825,148 @@ var ZIELE_VORSCHLAEGE=[
   "Mehr Zeit mit der Familie des anderen",
   "Jeder einen Abend pro Woche ganz für sich"
 ];
+
+
+/* ==================== NUR WIR ZWEI ==================== */
+var HOT_THEMEN=[
+  {id:"alles",   label:"Alles"},
+  {id:"vorspiel",label:"Vorspiel"},
+  {id:"oral",    label:"Oral"},
+  {id:"anal",    label:"Anal"},
+  {id:"spiel",   label:"Spiel & Rollen"},
+  {id:"toys",    label:"Toys"}
+];
+var HOT_STUFEN=[
+  {id:"warm",  label:"Anwärmen"},
+  {id:"heiss", label:"Heiß"},
+  {id:"direkt",label:"Sehr direkt"}
+];
+
+var HOTCARDS=[
+  /* ---------- VORSPIEL ---------- */
+  {g:"vorspiel",s:"warm",k:"Aufgabe",t:"Küsst euch zehn Minuten. Es geht danach nicht weiter."},
+  {g:"vorspiel",s:"warm",k:"Aufgabe",t:"Zieh ihn Stück für Stück aus, zwischen jedem Teil eine Pause."},
+  {g:"vorspiel",s:"warm",k:"Aufgabe",t:"Massier ihm Rücken und Po, bevor du irgendwo anders hingehst."},
+  {g:"vorspiel",s:"warm",k:"Aufgabe",t:"Küss dich vom Nacken abwärts. Lass nichts aus."},
+  {g:"vorspiel",s:"warm",k:"Frage", t:"Was ist dein Signal, wenn du Lust hast — und merkt er es?"},
+  {g:"vorspiel",s:"warm",k:"Frage", t:"Was fehlt dir beim Vorspiel meistens?"},
+  {g:"vorspiel",s:"heiss",k:"Aufgabe",t:"Zieh ihm die Unterhose mit den Zähnen aus."},
+  {g:"vorspiel",s:"heiss",k:"Aufgabe",t:"Streichle ihn überall, nur nicht am Schwanz. Fünf Minuten."},
+  {g:"vorspiel",s:"heiss",k:"Aufgabe",t:"Lass ihn zuschauen, wie du dich selbst anfasst."},
+  {g:"vorspiel",s:"heiss",k:"Spiel",  t:"Reib dich an ihm, durch die Hose, bis einer die Geduld verliert."},
+  {g:"vorspiel",s:"heiss",k:"Aufgabe",t:"Küss und leck erst die Innenseite der Oberschenkel. Alles andere kommt später."},
+  {g:"vorspiel",s:"direkt",k:"Aufgabe",t:"Fang an, ohne zu fragen. Er hat vorher Ja gesagt."},
+  {g:"vorspiel",s:"direkt",k:"Aufgabe",t:"Zieh ihn da aus, wo ihr gerade steht. Kein Schlafzimmer."},
+  {g:"vorspiel",s:"direkt",k:"Spiel",  t:"Bring ihn dreimal kurz davor und hör jedes Mal auf."},
+
+  /* ---------- ORAL ---------- */
+  {g:"oral",s:"warm",k:"Frage", t:"Was magst du beim Blasen am liebsten — Tempo, Tiefe, Hand dabei?"},
+  {g:"oral",s:"warm",k:"Frage", t:"Blasen oder geblasen werden?"},
+  {g:"oral",s:"warm",k:"Aufgabe",t:"Blas ihn fünf Minuten, nur mit den Lippen, keine Hände."},
+  {g:"oral",s:"warm",k:"Aufgabe",t:"Er sagt dir genau, wie er es will. Halt dich dran."},
+  {g:"oral",s:"heiss",k:"Aufgabe",t:"Blas ihn langsam, mit viel Zeit an der Eichel. Keine Eile."},
+  {g:"oral",s:"heiss",k:"Aufgabe",t:"Mund und Hand im selben Takt, die Hand dreht leicht mit."},
+  {g:"oral",s:"heiss",k:"Aufgabe",t:"Blas ihn, während er die Augen verbunden hat."},
+  {g:"oral",s:"heiss",k:"Aufgabe",t:"Erst die Eier, dann der Schwanz. Nimm dir doppelt so lange wie sonst."},
+  {g:"oral",s:"heiss",k:"Spiel",  t:"69, zehn Minuten. Wer zuerst aufhört, hat verloren."},
+  {g:"oral",s:"heiss",k:"Frage", t:"Im Mund kommen oder woanders? Sagt es vorher, nicht mittendrin."},
+  {g:"oral",s:"direkt",k:"Aufgabe",t:"So tief, wie es angenehm ist. Du bestimmst, er hält still."},
+  {g:"oral",s:"direkt",k:"Spiel",  t:"Er greift dir in die Haare und gibt das Tempo vor. Zeichen zum Aufhören vorher ausmachen."},
+  {g:"oral",s:"direkt",k:"Spiel",  t:"Blas ihn, bis er kurz davor ist, dann hör auf. Dreimal."},
+  {g:"oral",s:"direkt",k:"Aufgabe",t:"Er bläst dich, du sagst laut, was besser wäre. Ohne Höflichkeit."},
+
+  /* ---------- ANAL ---------- */
+  {g:"anal",s:"warm",k:"Frage", t:"Wer ist heute lieber aktiv, wer passiv — oder tauscht ihr?"},
+  {g:"anal",s:"warm",k:"Frage", t:"Was brauchst du, damit du dich wirklich fallen lassen kannst?"},
+  {g:"anal",s:"warm",k:"Aufgabe",t:"Rimming, fünf Minuten. Danach ist Schluss für heute."},
+  {g:"anal",s:"warm",k:"Aufgabe",t:"Ein Finger, viel Gleitgel, ganz langsam. Mehr ist nicht erlaubt."},
+  {g:"anal",s:"warm",k:"Aufgabe",t:"Leg ihm einen kleinen Plug ein und lass ihn den Abend damit verbringen."},
+  {g:"anal",s:"heiss",k:"Aufgabe",t:"Zwei Finger, Gleitgel, Fingerkuppen Richtung Bauchnabel — da sitzt die Prostata."},
+  {g:"anal",s:"heiss",k:"Aufgabe",t:"Rimming, bis er darum bittet, dass du weitermachst."},
+  {g:"anal",s:"heiss",k:"Aufgabe",t:"Macht es wie beim ersten Mal: Finger, dann Plug, dann erst mehr."},
+  {g:"anal",s:"heiss",k:"Spiel",  t:"Fangt an wie immer und wechselt nach fünf Minuten die Stellung."},
+  {g:"anal",s:"heiss",k:"Aufgabe",t:"Er liegt auf dem Rücken. Nimm dir die Zeit, ihm dabei ins Gesicht zu sehen."},
+  {g:"anal",s:"direkt",k:"Aufgabe",t:"Du reitest ihn. Tempo und Tiefe bestimmst du, er bewegt sich nicht."},
+  {g:"anal",s:"direkt",k:"Aufgabe",t:"Von hinten, betont langsam, bis er selbst schneller wird."},
+  {g:"anal",s:"direkt",k:"Spiel",  t:"Er bestimmt alles. Du sagst nur was, wenn es zu viel wird."},
+  {g:"anal",s:"direkt",k:"Aufgabe",t:"Nur Prostata, bis zum Schluss. Vorne wird nicht angefasst."},
+  {g:"anal",s:"direkt",k:"Aufgabe",t:"Zweimal hintereinander, dazwischen zehn Minuten Pause und reden."},
+
+  /* ---------- SPIEL & ROLLEN ---------- */
+  {g:"spiel",s:"warm",k:"Spiel",  t:"Augenbinde, zehn Minuten. Einer führt, einer lässt sich führen."},
+  {g:"spiel",s:"warm",k:"Spiel",  t:"Die Hände bleiben am Kopfteil. Wer sie wegnimmt, hat verloren."},
+  {g:"spiel",s:"warm",k:"Frage", t:"Ansagen oder hingeben — was liegt dir heute mehr?"},
+  {g:"spiel",s:"heiss",k:"Spiel", t:"Fesselt locker die Hände, mit etwas Weichem. Stop-Wort vorher ausmachen."},
+  {g:"spiel",s:"heiss",k:"Spiel", t:"Einer gibt Anweisungen, der andere führt sie aus. Zehn Minuten, dann Tausch."},
+  {g:"spiel",s:"heiss",k:"Aufgabe",t:"Zehnmal leicht auf den Po, dazwischen immer streicheln."},
+  {g:"spiel",s:"heiss",k:"Spiel", t:"Er zählt laut mit, wie oft du ihn küsst — und darf sich nicht bewegen."},
+  {g:"spiel",s:"direkt",k:"Spiel", t:"Eine Stunde läuft nur, was einer von euch ansagt. Danach Rollentausch."},
+  {g:"spiel",s:"direkt",k:"Spiel", t:"Edging zu zweit: abwechselnd kurz davor bringen, bis einer aufgibt."},
+  {g:"spiel",s:"direkt",k:"Spiel", t:"Er darf nicht kommen, bevor du es erlaubst."},
+  {g:"spiel",s:"direkt",k:"Aufgabe",t:"Spiegel davor, Licht an. Schaut hin."},
+
+  /* ---------- TOYS ---------- */
+  {g:"toys",s:"warm",k:"Frage", t:"Was würdet ihr gern ausprobieren, das ihr noch nicht habt?"},
+  {g:"toys",s:"warm",k:"Aufgabe",t:"Sucht zusammen ein Toy aus und bestellt es heute Abend."},
+  {g:"toys",s:"heiss",k:"Aufgabe",t:"Kleiner Plug, bleibt drin, während ihr etwas ganz anderes macht."},
+  {g:"toys",s:"heiss",k:"Aufgabe",t:"Vibrator nur außen, zehn Minuten. Nichts wird eingeführt."},
+  {g:"toys",s:"heiss",k:"Spiel",  t:"Er benutzt das Toy an sich selbst, du schaust nur zu."},
+  {g:"toys",s:"direkt",k:"Aufgabe",t:"Dildo statt Hand. Er bestimmt das Tempo, du die Tiefe."},
+  {g:"toys",s:"direkt",k:"Aufgabe",t:"Prostata-Vibrator, und er darf sich dabei nicht selbst anfassen."},
+  {g:"toys",s:"direkt",k:"Spiel",  t:"Zwei Toys, eins für jeden, gleichzeitig. Wer hält länger durch?"}
+];
+
+var HOTWISSEN=[
+  "Der Anus produziert keine eigene Feuchtigkeit. Ohne Gleitgel geht nichts — und zwar reichlich.",
+  "Mit Kondom nur Gleitgel auf Wasser- oder Silikonbasis. Öl, Vaseline und Bodylotion greifen Latex an.",
+  "Bei Silikon-Toys nur Gleitgel auf Wasserbasis. Silikongel löst das Material an.",
+  "Gleitgel außen aufs Kondom, nicht darunter. Darunter rutscht es leichter ab.",
+  "Langsam vordehnen: erst ein Finger, dann zwei, immer mit Gel. Der Schließmuskel braucht Zeit.",
+  "Schmerz ist ein Stoppsignal, nicht Teil der Sache. Bei Blut: aufhören.",
+  "Spülen muss nicht sein. Der Enddarm reinigt sich selbst, duschen reicht meistens.",
+  "Wenn ihr spült: nur wenig lauwarmes Wasser, keine Seife, keine Zusätze. Nie gegen Widerstand drücken.",
+  "Nach Analspiel nicht mit demselben Finger an Mund oder Gesicht.",
+  "Toys aus Silikon, Glas oder Edelstahl sind leichter sauber zu bekommen als Jelly.",
+  "Toys nach jeder Nutzung mit warmem Wasser reinigen, Herstellerangaben beachten.",
+  "Beim STI-Check auch einen rektalen Abstrich machen lassen. Infektionen im Po merkt man meist nicht.",
+  "Poppers und Potenzmittel zusammen können den Blutdruck gefährlich absacken lassen.",
+  "Bei Fesseln oder Augenbinde vorher ein Stop-Wort ausmachen, an das sich beide halten.",
+  "Vor Analsex besser nicht schwer essen.",
+  "Hämorrhoiden machen Schmerzen und Blutungen wahrscheinlicher. Dann langsamer und mit mehr Gel."
+];
+
+var WUERFEL={
+  was:["küssen","lecken","streicheln","massieren","sanft beißen","pusten",
+       "mit den Fingerspitzen entlangfahren","mit etwas Kaltem berühren","nur anschauen und beschreiben",
+       "ganz langsam berühren","festhalten","mit den Lippen entlangfahren","kurz kratzen","saugen"],
+  wo:["Nacken","Ohr","Hals","Schulter","Rücken","Bauch","Hüfte","Brustwarzen","Innenseite der Oberschenkel",
+      "Handgelenke","Hände","Kniekehle","Po","Lippen","Oberschenkel","Füße","Leiste","Schwanz","Eier",
+      "zwischen den Pobacken"],
+  lang:["30 Sekunden","eine Minute","zwei Minuten","fünf Minuten","so lange, bis er etwas sagt",
+        "bis er es nicht mehr aushält"]
+};
+
+var ABENDPLAN={
+  anfang:["Duscht zusammen, ohne Eile.",
+          "Zehn Minuten Massage, einer nach dem anderen.",
+          "Ein Glas trinken, Handys in den Flur.",
+          "Zieht euch beide um, als würdet ihr ausgehen.",
+          "Tanzt ein Lied im Wohnzimmer.",
+          "Esst zusammen, aber bei Kerzenlicht und ohne Fernseher.",
+          "Legt euch angezogen aufs Bett und küsst euch zehn Minuten."],
+  mitte:["Zieht eine Karte aus Heiße Karten, Stufe Heiß.",
+         "Würfelt dreimal und macht genau das.",
+         "Augenbinde, zehn Minuten, einer führt.",
+         "Er bestimmt alles, du sagst nur Ja oder Stop.",
+         "Nehmt euch einen gemeinsamen Ja-Punkt aus dem Wunsch-Abgleich vor.",
+         "Jeder hat fünf Minuten freie Hand, der andere hält still.",
+         "Erzählt euch abwechselnd, was ihr gerade wollt, und macht es."],
+  ende:["Liegen bleiben und reden, bis einer einschläft.",
+        "Erzählt euch, was am besten war.",
+        "Zusammen duschen und direkt ins Bett.",
+        "Noch zehn Minuten einfach nur nebeneinander liegen.",
+        "Der, der mehr gemacht hat, wird jetzt verwöhnt."]
+};
 
 var MODES = [
   {id:"quiz",  label:"Partner-Quiz"},
@@ -1881,7 +2148,7 @@ function renderStart(){
   $("poolHint").textContent = poolSize()+" Karten im Stapel"+(mine?", davon "+mine+" eigene":"")+". Leer? Wird neu gemischt.";
 }
 function show(screen){
-  ["screen-start","screen-game","screen-final","screen-edit","screen-evening","screen-minutes","screen-fragen","screen-advent","screen-escape","screen-dates","screen-notes","screen-wunsch","screen-klartext","screen-f36","screen-ziele"].forEach(function(id){
+  ["screen-start","screen-game","screen-final","screen-edit","screen-evening","screen-minutes","screen-fragen","screen-advent","screen-escape","screen-dates","screen-notes","screen-wunsch","screen-klartext","screen-f36","screen-ziele","screen-hot"].forEach(function(id){
     $(id).classList.toggle("hide", id!==screen);
   });
   window.scrollTo(0,0);
@@ -1905,6 +2172,7 @@ $("wuBtn").onclick=function(){ openWunsch(); };
 $("klBtn").onclick=function(){ openKlartext(); };
 $("f36Btn").onclick=function(){ open36(); };
 $("zielBtn").onclick=function(){ openZiele(); };
+$("hotBtn").onclick=function(){ openHot(); };
 
 /* ==================== ANZEIGE ==================== */
 function paintScores(){
@@ -3194,6 +3462,104 @@ $("zielAdd").onclick=function(){
   S.ziele.push({t:v,d:false}); $("zielInput").value=""; save(); renderZiele(); tone(760,120);
 };
 $("zielHome").onclick=function(){ renderStart(); show("screen-start"); };
+
+
+/* ==================== NUR WIR ZWEI: ABLAUF ==================== */
+var HZ={ thema:"alles", stufe:"warm", queue:[], card:null };
+function openHot(){
+  $("hotCardWrap").classList.add("hide");
+  $("hotDice").classList.add("hide");
+  $("hotPlan").classList.add("hide");
+  $("hotWissen").classList.add("hide");
+  renderHotFilter();
+  $("hotHint").textContent=hotPool().length+" Karten passen gerade. Stop heißt stop, immer.";
+  show("screen-hot");
+}
+function renderHotFilter(){
+  chipRow("hotThemen", HOT_THEMEN, function(id){ return HZ.thema===id; },
+    function(id){ HZ.thema=id; HZ.queue=[]; renderHotFilter(); nextHot(); });
+  chipRow("hotStufen", HOT_STUFEN, function(id){ return HZ.stufe===id; },
+    function(id){ HZ.stufe=id; HZ.queue=[]; renderHotFilter(); nextHot(); }, "lvl");
+}
+function hotPool(){
+  return HOTCARDS.filter(function(c){
+    if(HZ.thema!=="alles" && c.g!==HZ.thema) return false;
+    return c.s===HZ.stufe;
+  });
+}
+function themaLabel(id){
+  for(var i=0;i<HOT_THEMEN.length;i++) if(HOT_THEMEN[i].id===id) return HOT_THEMEN[i].label;
+  return "";
+}
+function nextHot(){
+  $("hotDice").classList.add("hide");
+  $("hotPlan").classList.add("hide");
+  $("hotWissen").classList.add("hide");
+  var pool=hotPool();
+  if(!pool.length){
+    $("hotCardWrap").classList.add("hide");
+    $("hotHint").textContent="Für diese Kombination gibt es nichts. Nimm ein anderes Thema oder eine andere Stufe.";
+    return;
+  }
+  if(!HZ.queue.length) HZ.queue=shuffle(pool.slice());
+  HZ.card=HZ.queue.pop();
+  $("hotCardWrap").classList.remove("hide");
+  $("hotBadge").textContent=HZ.card.k+" · "+themaLabel(HZ.card.g);
+  $("hotText").textContent=HZ.card.t;
+  $("hotHint").textContent="Noch "+HZ.queue.length+" von "+pool.length+" Karten in dieser Auswahl.";
+  var c=$("hotCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+}
+function rollDice(){
+  function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+  $("hotCardWrap").classList.add("hide");
+  $("hotPlan").classList.add("hide");
+  $("hotWissen").classList.add("hide");
+  $("hotDice").classList.remove("hide");
+  $("diceWas").textContent=pick(WUERFEL.was);
+  $("diceWo").textContent=pick(WUERFEL.wo);
+  $("diceLang").textContent=pick(WUERFEL.lang);
+  tone(620,90); setTimeout(function(){ tone(820,110); },110);
+  var c=$("diceCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+  $("hotHint").textContent="Nochmal würfeln geht, so oft ihr wollt.";
+}
+function makePlan(){
+  function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+  $("hotCardWrap").classList.add("hide");
+  $("hotDice").classList.add("hide");
+  $("hotWissen").classList.add("hide");
+  $("hotPlan").classList.remove("hide");
+  $("planA").textContent=pick(ABENDPLAN.anfang);
+  $("planB").textContent=pick(ABENDPLAN.mitte);
+  $("planC").textContent=pick(ABENDPLAN.ende);
+  var c=$("planCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+  $("hotHint").textContent="Gefällt ein Teil nicht? Neuen Plan würfeln.";
+}
+var wissenIdx=-1;
+function showWissen(){
+  $("hotCardWrap").classList.add("hide");
+  $("hotDice").classList.add("hide");
+  $("hotPlan").classList.add("hide");
+  $("hotWissen").classList.remove("hide");
+  var i=Math.floor(Math.random()*HOTWISSEN.length), guard=0;
+  while(i===wissenIdx && HOTWISSEN.length>1 && guard++<8) i=Math.floor(Math.random()*HOTWISSEN.length);
+  wissenIdx=i;
+  $("wissenText").textContent=HOTWISSEN[i];
+  var c=$("wissenCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+  $("hotHint").textContent=HOTWISSEN.length+" Hinweise, aus Beratungsstellen und Gesundheitsportalen zusammengetragen.";
+}
+$("hotNext").onclick=function(){ nextHot(); };
+$("hotFav").onclick=function(){
+  if(!HZ.card) return;
+  var dup=false;
+  S.favs.forEach(function(f){ if(f.t===HZ.card.t) dup=true; });
+  if(!dup){ S.favs.push({m:"dare", t:HZ.card.t}); save(); }
+  tone(880,120);
+  $("hotHint").textContent = dup ? "Hast du dir schon gemerkt." : "Gemerkt. Liegt bei den eigenen Karten.";
+};
+$("hotDiceBtn").onclick=function(){ rollDice(); };
+$("hotPlanBtn").onclick=function(){ makePlan(); };
+$("hotWissenBtn").onclick=function(){ showWissen(); };
+$("hotHome").onclick=function(){ renderStart(); show("screen-start"); };
 
 /* ==================== HOMESCREEN ==================== */
 try{
