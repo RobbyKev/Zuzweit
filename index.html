@@ -227,6 +227,10 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
       <p>Ein Handy, zwei Leute. Reden, spielen, Zeit füreinander.</p>
     </div>
 
+    <div class="tiles">
+      <button class="tile t-red wide" id="stBtn"><b>Notbremse</b><span>Stopp, Pause, klären, versöhnen — und das Logbuch danach</span></button>
+    </div>
+
     <h2 class="sect t-pink">Miteinander reden</h2>
     <div class="tiles">
       <button class="tile t-pink" id="fragBtn"><b>Fragenstapel</b><span>179 Fragen, sieben Themen</span></button>
@@ -606,6 +610,17 @@ footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
         <button class="btn btn--skip" id="wuAbbruch">Abbrechen</button>
       </div>
     </div>
+  </section>
+
+  <section id="screen-sturm" class="hide">
+    <div class="card" id="stCard">
+      <span class="badge" id="stBadge" style="background:var(--red)">Notbremse</span>
+      <div class="who" id="stWho"></div>
+      <div class="q small" id="stText"></div>
+      <div id="stExtra" style="display:grid;gap:10px"></div>
+      <div class="timer hide" id="stTime">0</div>
+    </div>
+    <div class="row" id="stActions" style="margin-top:14px"></div>
   </section>
 
   <section id="screen-klartext" class="hide">
@@ -2770,7 +2785,7 @@ function renderStart(){
   $("poolHint").textContent = poolSize()+" Karten im Stapel"+(mine?", davon "+mine+" eigene":"")+". Leer? Wird neu gemischt.";
 }
 function show(screen){
-  ["screen-start","screen-game","screen-final","screen-edit","screen-evening","screen-minutes","screen-fragen","screen-advent","screen-escape","screen-dates","screen-notes","screen-wunsch","screen-klartext","screen-f36","screen-ziele","screen-hot","screen-stellung","screen-rolle","screen-privat","screen-verrucht","screen-spiel"].forEach(function(id){
+  ["screen-start","screen-game","screen-final","screen-edit","screen-evening","screen-minutes","screen-fragen","screen-advent","screen-escape","screen-dates","screen-notes","screen-wunsch","screen-klartext","screen-sturm","screen-f36","screen-ziele","screen-hot","screen-stellung","screen-rolle","screen-privat","screen-verrucht","screen-spiel"].forEach(function(id){
     $(id).classList.toggle("hide", id!==screen);
   });
   window.scrollTo(0,0);
@@ -3987,7 +4002,9 @@ function runKlartext(){
   n.textContent = (KL.step===f.steps.length-1) ? "Fertig" : "Weiter";
   n.onclick=function(){
     if(KL.step<f.steps.length-1){ KL.step++; runKlartext(); }
-    else { klStopTimer(); tone(760,140); setTimeout(function(){ tone(980,180); },150); openKlartext(); }
+    else { klStopTimer(); tone(760,140); setTimeout(function(){ tone(980,180); },150);
+      if(KL.fromSturm){ KL.fromSturm=false; NB.phase="versoehnen"; NB.vs=0; renderSturm(); show("screen-sturm"); }
+      else openKlartext(); }
   };
   a.appendChild(n);
   var z=document.createElement("button");
@@ -3997,7 +4014,322 @@ function runKlartext(){
   a.appendChild(z);
   var c=$("klCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
 }
-$("klHome").onclick=function(){ klStopTimer(); renderStart(); show("screen-start"); };
+$("klHome").onclick=function(){ klStopTimer(); KL.fromSturm=false; renderStart(); show("screen-start"); };
+
+/* ==================== NOTBREMSE ==================== */
+var NB={ phase:"stopp", min:20, end:0, timer:null, akku:[0,0], tip:0, back:"stopp" };
+var ST_TIPS=[
+  "Nicht im Kopf weiterstreiten. Wenn du merkst, dass du Argumente sammelst: bewusst aufhören.",
+  "Was trinken. Ans Fenster, kurz an die frische Luft.",
+  "Während der Pause nicht schreiben. Höchstens: Ich bin noch da.",
+  "Frag dich nicht, wer recht hat. Frag dich, was dich eigentlich so getroffen hat.",
+  "Beide sind gerade müde und dünnhäutig. Das ist kein Beweis, dass zwischen euch was kaputt ist.",
+  "Hinlegen ist erlaubt. Pause heißt Pause."
+];
+var ST_SAETZE=[
+  "Ich will dich verstehen, nicht gewinnen.",
+  "Ich merk, ich werd laut. Ich brauch kurz Pause.",
+  "Was meinst du gerade genau?",
+  "Ich hab gerade nicht zugehört. Sag's bitte nochmal.",
+  "Ich glaub, wir streiten gar nicht über das hier.",
+  "Mir ist gerade alles zu viel. Das liegt nicht nur an dir.",
+  "Ich bin sauer und hab dich trotzdem lieb.",
+  "Ich geh kurz raus, aber ich komm wieder."
+];
+var ST_REPAIR=[
+  "Das war unfair von mir.",
+  "Kann ich nochmal von vorn anfangen?",
+  "Wir sind auf derselben Seite.",
+  "Das hab ich blöd gesagt. Ich meinte eigentlich ...",
+  "Du hast da recht.",
+  "Ich hör dir zu. Erzähl nochmal.",
+  "Mir ist wichtiger, dass es dir gut geht, als dass ich recht habe.",
+  "Komm mal her.",
+  "Lass uns kurz durchatmen, dann nochmal.",
+  "Ich will das mit dir klären, nicht gegen dich."
+];
+var NB_FRAGEN=[
+  "Was hat mich gerade wirklich getroffen? Nicht der Satz, sondern das, was er in mir ausgelöst hat.",
+  "Was brauche ich jetzt von ihm? Eine Entschuldigung, Ruhe, Nähe, dass er mir glaubt?",
+  "Was ist mein Anteil daran? Nicht alles, aber irgendwas ist es immer.",
+  "Was will ich als Erstes sagen, wenn wir wieder reden? Ein Satz, ohne Vorwurf."
+];
+var ST_LEISE=[
+  "20 Sekunden umarmen, ohne was zu sagen.",
+  "Zusammen eine Runde spazieren gehen. Über was anderes reden oder gar nicht.",
+  "Einer macht Tee oder Kakao für beide.",
+  "Nebeneinander auf die Couch und zusammen was gucken.",
+  "Jeder sagt einen Satz: Ich bin noch sauer, aber ich bin da.",
+  "Zusammen was essen. Kein Thema, nur essen."
+];
+var ST_VERS=[
+  {t:"Setzt euch nah zusammen. Hand halten ist erlaubt, muss aber nicht."},
+  {t:"Jeder sagt: Was mir leidtut, ist ... Ohne Aber hinten dran.", sec:120},
+  {t:"Jeder sagt: Was ich an dir mag, auch gerade jetzt, ist ...", sec:120},
+  {t:"Jeder sagt: Was ich jetzt von dir brauche, ist ... Eine Umarmung, Ruhe, einen Tee, einen blöden Witz.", sec:90},
+  {t:"Umarmt euch. Mindestens 20 Sekunden, auch wenn es sich am Anfang komisch anfühlt.", sec:20},
+  {t:"Macht heute noch eine schöne Kleinigkeit zusammen. Irgendwas, das nichts mit dem Streit zu tun hat.", end:true}
+];
+function nbAbm(){
+  try{ var r=localStorage.getItem("zz_abmachung"); return r?JSON.parse(r):null; }catch(e){ return null; }
+}
+function nbSetAbm(o){
+  try{ if(o) localStorage.setItem("zz_abmachung",JSON.stringify(o)); else localStorage.removeItem("zz_abmachung"); }catch(e){}
+}
+function nbLog(){
+  try{ var r=localStorage.getItem("zz_streitlog"); return r?JSON.parse(r):[]; }catch(e){ return []; }
+}
+function nbSetLog(a){ try{ localStorage.setItem("zz_streitlog",JSON.stringify(a)); }catch(e){} }
+function nbUhr(ms){
+  var dt=new Date(ms);
+  return ("0"+dt.getHours()).slice(-2)+":"+("0"+dt.getMinutes()).slice(-2);
+}
+function nbDatum(){
+  var dt=new Date();
+  return dt.getDate()+"."+(dt.getMonth()+1)+"."+dt.getFullYear();
+}
+function nbFeld(host,label,ph,val){
+  var l=document.createElement("div"); l.className="who"; l.textContent=label; host.appendChild(l);
+  var i=document.createElement("input"); i.type="text"; i.placeholder=ph; i.maxLength=140; i.value=val||"";
+  i.style.cssText="width:100%;border:4px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-weight:700;background:var(--card);color:var(--card-ink)";
+  host.appendChild(i); return i;
+}
+function stSatz(){ try{ return localStorage.getItem("zz_stoppsatz")||""; }catch(e){ return ""; } }
+function stSetSatz(v){ try{ if(v) localStorage.setItem("zz_stoppsatz",v); else localStorage.removeItem("zz_stoppsatz"); }catch(e){} }
+function stCopy(txt,btn){
+  var done=function(){ btn.textContent="Kopiert – jetzt per WhatsApp schicken"; };
+  var fail=function(){ btn.textContent="Kopieren geht hier nicht – sag ihm den Satz selbst"; };
+  if(navigator.share){ navigator.share({text:txt}).then(function(){ btn.textContent="Geschickt"; }, function(){}); return; }
+  try{ navigator.clipboard.writeText(txt).then(done, fail); }catch(e){ fail(); }
+}
+function stLoad(){ try{ var e=+localStorage.getItem("zz_sturm_end")||0; if(e>Date.now()){ NB.end=e; return true; } }catch(e){} return false; }
+function stSaveEnd(v){ try{ if(v) localStorage.setItem("zz_sturm_end",String(v)); else localStorage.removeItem("zz_sturm_end"); }catch(e){} }
+function stStop(){ if(NB.timer){ clearInterval(NB.timer); NB.timer=null; } }
+function nbAct(cls,txt,fn){ var b=document.createElement("button"); b.className="btn "+cls; b.textContent=txt; b.onclick=fn; $("stActions").appendChild(b); return b; }
+function stChips(host,list,isOn,pick){
+  var w=document.createElement("div"); w.className="chips";
+  list.forEach(function(it){
+    var c=document.createElement("button"); c.className="chip"; c.textContent=it.l;
+    c.setAttribute("aria-pressed", isOn(it.v)?"true":"false");
+    c.onclick=function(){ pick(it.v); };
+    w.appendChild(c);
+  });
+  host.appendChild(w);
+}
+function stNames(){ return (S.names&&S.names.length===2)?S.names:["Uli","Kevin"]; }
+function openSturm(){
+  stStop();
+  if(stLoad()) NB.phase="pause"; else NB.phase="stopp";
+  renderSturm(); show("screen-sturm");
+}
+function renderSturm(){
+  stStop();
+  var c=$("stCard"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+  var ex=$("stExtra"); ex.innerHTML=""; $("stActions").innerHTML="";
+  var t=$("stTime"); t.className="timer hide";
+  var bd=$("stBadge"), who=$("stWho"), tx=$("stText");
+  if(NB.phase==="stopp"){
+    bd.textContent="Stopp"; who.textContent="Jetzt nicht weiterreden";
+    var ab=nbAbm();
+    var ss=stSatz() || (ab&&ab.wort) || "";
+    if(ss){ var sq=document.createElement("div"); sq.className="q"; sq.textContent="„"+ss+"“"; ex.appendChild(sq); }
+    if(ab){
+      var ah=document.createElement("div"); ah.className="infobox";
+      ah.innerHTML="<b>Eure Abmachung vom "+ab.datum+"</b>";
+      var at=document.createElement("span");
+      at.textContent="Pause darf jeder ausrufen, "+ab.min+" Minuten, und jeder kommt zurück."+(ab.regel?" "+ab.regel:"");
+      ah.appendChild(at); ex.appendChild(ah);
+      NB.min=ab.min;
+    } else {
+      var nh=document.createElement("div"); nh.className="hint";
+      nh.textContent="Ihr habt noch keine Abmachung. Macht das mal in Ruhe, nicht jetzt — dann wirkt die Pause nicht wie Abhauen.";
+      ex.appendChild(nh);
+    }
+    tx.textContent="Ihr redet gerade aneinander vorbei. Das ist kein Aufgeben, sondern eine Pause. Keiner hat verloren. Sagt beide: Pause, wir reden später weiter. Dann geht jeder in einen anderen Raum.";
+    var l=document.createElement("div"); l.className="who"; l.textContent="Wie lange?"; ex.appendChild(l);
+    stChips(ex,[{l:"20 Min",v:20},{l:"30 Min",v:30},{l:"45 Min",v:45}],function(v){return NB.min===v;},function(v){ NB.min=v; renderSturm(); });
+    nbAct("btn--go","Pause starten",function(){ NB.end=Date.now()+NB.min*60000; stSaveEnd(NB.end); NB.phase="pause"; NB.tip=0; renderSturm(); });
+    nbAct("btn--pink","Sätze für den Moment",function(){ NB.back="stopp"; NB.phase="saetze"; renderSturm(); });
+    nbAct("btn--cyan","Sätze, die runterkühlen",function(){ NB.back="stopp"; NB.phase="repair"; renderSturm(); });
+    nbAct("btn--skip","Streit ist vorbei, wir wollen klären oder uns versöhnen",function(){ NB.akku=[0,0]; NB.phase="akku"; renderSturm(); });
+    nbAct("btn--small","Abmachung "+(nbAbm()?"ansehen oder ändern":"treffen"),function(){ NB.phase="abmachung"; renderSturm(); });
+    nbAct("btn--small","Logbuch"+(nbLog().length?" ("+nbLog().length+")":""),function(){ NB.phase="logliste"; renderSturm(); });
+  }
+  else if(NB.phase==="pause"){
+    bd.textContent="Pause"; who.textContent="Jeder für sich · wieder reden um "+nbUhr(NB.end);
+    tx.textContent=ST_TIPS[NB.tip%ST_TIPS.length];
+    t.className="timer";
+    var tick=function(){
+      var left=Math.round((NB.end-Date.now())/1000);
+      if(left<=0){ stStop(); stSaveEnd(0); tone(660,260); buzz([120,80,120]); NB.akku=[0,0]; NB.phase="akku"; renderSturm(); return; }
+      t.textContent=fmt(left);
+    };
+    tick(); NB.timer=setInterval(tick,500);
+    var cp=nbAct("btn--yes","„Wir reden um "+nbUhr(NB.end)+" weiter“ schicken",function(){
+      stCopy("Ich bin noch da. Ich brauch nur kurz Pause. Wir reden um "+nbUhr(NB.end)+" weiter. Ich hab dich lieb.",cp); });
+    nbAct("btn--go","Vier Fragen für die Pause",function(){ NB.fr=0; NB.phase="fragen"; renderSturm(); });
+    nbAct("btn--cyan","Anderer Gedanke",function(){ NB.tip++; tx.textContent=ST_TIPS[NB.tip%ST_TIPS.length]; });
+    nbAct("btn--pink","Sätze für den Moment",function(){ NB.back="pause"; NB.phase="saetze"; renderSturm(); });
+    nbAct("btn--skip","Pause früher beenden",function(){ stSaveEnd(0); NB.akku=[0,0]; NB.phase="akku"; renderSturm(); });
+  }
+  else if(NB.phase==="akku"){
+    bd.textContent="Akku"; who.textContent="Setzt euch kurz zusammen";
+    tx.textContent="Wie voll ist euer Akku gerade? Ehrlich, ohne Bewertung. 1 heißt leer, 5 heißt voll.";
+    var n=stNames();
+    [0,1].forEach(function(i){
+      var l=document.createElement("div"); l.className="who"; l.textContent=n[i]; ex.appendChild(l);
+      stChips(ex,[1,2,3,4,5].map(function(v){return {l:String(v),v:v};}),function(v){return NB.akku[i]===v;},function(v){ NB.akku[i]=v; renderSturm(); });
+    });
+    var ok=NB.akku[0]&&NB.akku[1];
+    var b=nbAct("btn--go","Weiter",function(){ if(!ok) return; NB.phase=Math.min(NB.akku[0],NB.akku[1])<=2?"leise":"reden"; NB.tip=Math.floor(Math.random()*ST_LEISE.length); renderSturm(); });
+    if(!ok){ b.style.opacity=".45"; }
+  }
+  else if(NB.phase==="leise"){
+    bd.textContent="Heute leise"; who.textContent="Einer von euch ist leer";
+    tx.textContent="Heute wird nichts mehr geklärt. Das Ziel ist nur: wieder nebeneinander sein. Zum Beispiel:";
+    var q=document.createElement("div"); q.className="q"; q.style.fontSize="1.25rem"; q.textContent=ST_LEISE[NB.tip%ST_LEISE.length]; ex.appendChild(q);
+    var l=document.createElement("div"); l.className="who"; l.textContent="Wann redet ihr in Ruhe darüber?"; ex.appendChild(l);
+    var when=["Morgen","Nach der nächsten Schicht","Am Wochenende","Wenn beide wieder Kraft haben"];
+    stChips(ex,when.map(function(v){return {l:v,v:v};}),function(v){return NB.when===v;},function(v){ NB.when=v; renderSturm(); });
+    if(NB.when){ var a=document.createElement("div"); a.className="hint"; a.textContent="Abgemacht: "+NB.when+". Dann gern mit Klartext, Wenn's kracht."; ex.appendChild(a); }
+    nbAct("btn--pink","Doch lieber gleich versöhnen",function(){ NB.phase="versoehnen"; NB.vs=0; renderSturm(); });
+    nbAct("btn--cyan","Andere Idee",function(){ NB.tip++; renderSturm(); });
+    nbAct("btn--go","Machen wir",function(){ tone(760,140); setTimeout(function(){ tone(980,180); },150); NB.when=null; renderStart(); show("screen-start"); });
+  }
+  else if(NB.phase==="reden"){
+    bd.textContent="Wieder da"; who.textContent="Ihr seid beide ansprechbar";
+    tx.textContent="Ihr könnt jetzt reden, aber nur geführt und streng abwechselnd. Wenn es wieder hochkocht: zurück zur Notbremse, ohne Diskussion. Danach geht es direkt weiter zur Versöhnung.";
+    nbAct("btn--go","Geführt reden: Wenn's kracht",function(){
+      var i=0; KLARTEXT.forEach(function(f,k){ if(f.id==="streit") i=k; });
+      show("screen-klartext"); KL.f=i; KL.step=0; KL.fromSturm=true; runKlartext();
+    });
+    nbAct("btn--pink","Nichts mehr klären, nur versöhnen",function(){ NB.phase="versoehnen"; NB.vs=0; renderSturm(); });
+    nbAct("btn--yes","Heute lieber leise",function(){ NB.phase="leise"; renderSturm(); });
+  }
+  else if(NB.phase==="saetze"){
+    bd.textContent="Sätze"; who.textContent="Für den Moment, wenn's hochkocht";
+    tx.textContent="Einen davon laut sagen reicht. Tippt auf einen, um ihn zu eurem Stoppsatz zu machen. Der steht dann ganz oben in der Notbremse.";
+    var cur=stSatz();
+    ST_SAETZE.forEach(function(s){ var d=document.createElement("button"); d.className="btn btn--small"; d.style.textAlign="left"; d.style.boxShadow="3px 3px 0 var(--line)";
+      if(s===cur){ d.style.background="var(--yellow)"; d.style.color="#141014"; d.textContent="★ "+s; } else d.textContent=s;
+      d.onclick=function(){ stSetSatz(s===cur?"":s); renderSturm(); }; ex.appendChild(d); });
+    var inp=document.createElement("input"); inp.type="text"; inp.placeholder="Oder euer eigener Satz …"; inp.maxLength=120;
+    inp.style.cssText="width:100%;border:4px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-weight:700;background:var(--card);color:var(--card-ink)";
+    if(cur && ST_SAETZE.indexOf(cur)<0) inp.value=cur;
+    ex.appendChild(inp);
+    var sv=document.createElement("button"); sv.className="btn btn--small btn--cyan"; sv.textContent="Eigenen Satz speichern";
+    sv.onclick=function(){ var v=inp.value.trim(); if(v){ stSetSatz(v); renderSturm(); } }; ex.appendChild(sv);
+    nbAct("btn--go","Zurück",function(){ NB.phase=NB.back; if(NB.back==="pause"&&!stLoad()) NB.phase="stopp"; renderSturm(); });
+  }
+  else if(NB.phase==="fragen"){
+    bd.textContent="Für dich allein"; who.textContent="Frage "+(NB.fr+1)+" von "+NB_FRAGEN.length;
+    tx.textContent=NB_FRAGEN[NB.fr];
+    var hi=document.createElement("div"); hi.className="hint";
+    hi.textContent="Nicht aufschreiben müssen. Einmal ehrlich zu Ende denken reicht.";
+    ex.appendChild(hi);
+    if(NB.fr<NB_FRAGEN.length-1) nbAct("btn--go","Weiter",function(){ NB.fr++; renderSturm(); });
+    else nbAct("btn--go","Fertig",function(){ NB.phase=stLoad()?"pause":"stopp"; renderSturm(); });
+    if(NB.fr>0) nbAct("btn--skip","Eine zurück",function(){ NB.fr--; renderSturm(); });
+    nbAct("btn--skip","Zurück zur Pause",function(){ NB.phase=stLoad()?"pause":"stopp"; renderSturm(); });
+  }
+  else if(NB.phase==="repair"){
+    bd.textContent="Runterkühlen"; who.textContent="Mitten im Streit, ohne Pause";
+    tx.textContent="Diese Sätze beenden den Streit nicht, sie senken die Temperatur. Einer reicht, und er zählt nur, wenn der andere ihn gelten lässt.";
+    ST_REPAIR.forEach(function(r){
+      var d=document.createElement("div"); d.className="infobox"; d.textContent=r; ex.appendChild(d);
+    });
+    nbAct("btn--go","Zurück",function(){ NB.phase=NB.back||"stopp"; if(NB.phase==="pause"&&!stLoad()) NB.phase="stopp"; renderSturm(); });
+  }
+  else if(NB.phase==="abmachung"){
+    bd.textContent="Abmachung"; who.textContent="In Ruhe ausfüllen, nicht im Streit";
+    tx.textContent="Eine Pause funktioniert nur, wenn sie vorher vereinbart war. Sonst wirkt sie wie Abhauen oder Bestrafung.";
+    var cur=nbAbm()||{wort:"",min:20,regel:""};
+    var w=nbFeld(ex,"Unser Stoppwort","Zum Beispiel: Pause, Rot, Auszeit",cur.wort);
+    var r=nbFeld(ex,"Eigene Regel, wenn ihr wollt","Zum Beispiel: Nach 22 Uhr wird nichts mehr geklärt",cur.regel);
+    var ml=document.createElement("div"); ml.className="who"; ml.textContent="Wie lange dauert eine Pause?"; ex.appendChild(ml);
+    var chosen=cur.min||20;
+    stChips(ex,[{l:"20 Min",v:20},{l:"30 Min",v:30},{l:"45 Min",v:45}],function(v){return chosen===v;},
+      function(v){ nbSetAbm({wort:w.value.trim(),min:v,regel:r.value.trim(),datum:cur.datum||nbDatum()}); renderSturm(); });
+    var fest=document.createElement("div"); fest.className="infobox";
+    fest.innerHTML="<b>Das gilt dann für beide</b>";
+    var fs=document.createElement("span");
+    fs.textContent="Jeder darf die Pause ausrufen, keiner diskutiert sie weg, und jeder kommt zur vereinbarten Zeit zurück.";
+    fest.appendChild(fs); ex.appendChild(fest);
+    nbAct("btn--go","Abmachung speichern",function(){
+      nbSetAbm({wort:w.value.trim(), min:chosen, regel:r.value.trim(), datum:nbDatum()});
+      tone(760,140); setTimeout(function(){ tone(980,180); },150);
+      NB.phase="stopp"; renderSturm();
+    });
+    if(nbAbm()) nbAct("btn--skip","Abmachung löschen",function(){ nbSetAbm(null); renderSturm(); });
+    nbAct("btn--skip","Zurück",function(){ NB.phase="stopp"; renderSturm(); });
+  }
+  else if(NB.phase==="log"){
+    bd.textContent="Logbuch"; who.textContent="Drei Zeilen, dann ist gut";
+    tx.textContent="Nicht für die Akte, sondern damit ihr nach ein paar Einträgen seht, worum es bei euch eigentlich immer geht.";
+    var t1=nbFeld(ex,"Worum ging es?","Ein, zwei Wörter reichen","");
+    var t2=nbFeld(ex,"Was hat geholfen?","Pause, zuhören, Umarmung ...","");
+    var t3=nbFeld(ex,"Was habt ihr abgemacht?","Der eine kleine nächste Schritt","");
+    nbAct("btn--go","Eintragen",function(){
+      var th=t1.value.trim();
+      if(!th){ t1.focus(); return; }
+      var a=nbLog();
+      a.push({d:nbDatum(), thema:th, hilf:t2.value.trim(), abm:t3.value.trim()});
+      nbSetLog(a); tone(760,140);
+      if(t3.value.trim()){ S.ziele.push({t:"Abgemacht nach dem Streit: "+t3.value.trim(), d:false}); save(); }
+      NB.phase="logliste"; renderSturm();
+    });
+    nbAct("btn--skip","Überspringen",function(){ renderStart(); show("screen-start"); });
+  }
+  else if(NB.phase==="logliste"){
+    var log=nbLog();
+    bd.textContent="Logbuch"; who.textContent=log.length+(log.length===1?" Eintrag":" Einträge");
+    var zaehl={}, zeig={};
+    log.forEach(function(e){ var k=e.thema.toLowerCase(); zaehl[k]=(zaehl[k]||0)+1; if(!zeig[k]) zeig[k]=e.thema; });
+    var oft=Object.keys(zaehl).filter(function(k){ return zaehl[k]>=3; }).map(function(k){ return zeig[k]; });
+    tx.textContent = oft.length
+      ? "Dasselbe Thema zum dritten Mal: "+oft.join(", ")+". Solche Themen löst man meistens nicht, man lernt sie anders zu führen. Nehmt es euch mal außerhalb eines Streits vor."
+      : (log.length ? "Was bisher passiert ist." : "Noch nichts eingetragen. Nach dem nächsten Mal könnt ihr hier drei Zeilen hinterlassen.");
+    log.slice().reverse().slice(0,12).forEach(function(e){
+      var d=document.createElement("div"); d.className="infobox";
+      d.innerHTML="<b>"+e.d+" · "+e.thema+"</b>";
+      var sp=document.createElement("span");
+      sp.textContent=(e.hilf?"Geholfen hat: "+e.hilf+". ":"")+(e.abm?"Abgemacht: "+e.abm:"");
+      d.appendChild(sp); ex.appendChild(d);
+    });
+    nbAct("btn--go","Neuer Eintrag",function(){ NB.phase="log"; renderSturm(); });
+    if(log.length){
+      var del=nbAct("btn--skip","Logbuch leeren",function(){
+        if(del.dataset.sure){ nbSetLog([]); renderSturm(); }
+        else { del.dataset.sure="1"; del.textContent="Wirklich alles löschen? Nochmal tippen"; }
+      });
+    }
+    nbAct("btn--skip","Zurück",function(){ NB.phase="stopp"; renderSturm(); });
+  }
+  else if(NB.phase==="versoehnen"){
+    var v=ST_VERS[NB.vs];
+    bd.textContent="Versöhnen"; who.textContent="Schritt "+(NB.vs+1)+" von "+ST_VERS.length;
+    tx.textContent=v.t;
+    if(v.sec){
+      var sb=nbAct("btn--cyan","Zeit starten ("+fmt(v.sec)+")",function(){
+        stStop(); var e=Date.now()+v.sec*1000; t.className="timer";
+        var tk=function(){ var l=Math.round((e-Date.now())/1000); if(l<=0){ stStop(); t.className="timer done"; t.textContent="Zeit um"; tone(660,260); buzz([120,80,120]); return; } t.textContent=fmt(l); };
+        tk(); NB.timer=setInterval(tk,250); sb.textContent="Zeit neu starten";
+      });
+    }
+    if(v.end){
+      nbAct("btn--cyan","Abend zu zweit",function(){ openEvening(); });
+      nbAct("btn--cyan","Date-Ideen",function(){ openDates(); });
+      nbAct("btn--pink","Fragenstapel",function(){ openFragen(); });
+      nbAct("btn--yes","Drei Zeilen ins Logbuch",function(){ NB.phase="log"; renderSturm(); });
+      nbAct("btn--go","Fertig",function(){ tone(760,140); setTimeout(function(){ tone(980,180); },150); renderStart(); show("screen-start"); });
+    } else {
+      nbAct("btn--go","Weiter",function(){ NB.vs++; renderSturm(); });
+    }
+    if(NB.vs>0) nbAct("btn--skip","Ein Schritt zurück",function(){ NB.vs--; renderSturm(); });
+  }
+  nbAct("btn--skip","Zurück zum Start",function(){ stStop(); renderStart(); show("screen-start"); });
+}
+$("stBtn").onclick=function(){ openSturm(); };
 
 /* ==================== 36 FRAGEN ==================== */
 var F3={ stufe:0, idx:0, phase:"intro" };
